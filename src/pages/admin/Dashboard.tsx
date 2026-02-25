@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/Button';
 import { Plus, Trash2, Edit, Save, X, LayoutGrid, FileText, Settings, Type, Phone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import SimpleMDE from 'react-simplemde-editor';
+import 'easymde/dist/easymde.min.css';
 
 // Types
 interface Industry {
@@ -343,7 +345,17 @@ export default function Dashboard() {
                         </div>
                         <div className="space-y-2 md:col-span-2">
                           <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Full Content (Markdown Supported)</label>
-                          <textarea className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all font-mono text-sm" rows={10} value={formData.content || ''} onChange={e => setFormData({...formData, content: e.target.value})} placeholder="Write your post content here..." />
+                          <div className="bg-white rounded-xl overflow-hidden border border-gray-200 focus-within:ring-2 focus-within:ring-brand-green focus-within:border-transparent transition-all">
+                            <SimpleMDE 
+                              value={formData.content || ''} 
+                              onChange={value => setFormData({...formData, content: value})} 
+                              options={{
+                                spellChecker: false,
+                                placeholder: "Write your post content here using Markdown...",
+                                status: false,
+                              }}
+                            />
+                          </div>
                         </div>
                       </>
                     )}

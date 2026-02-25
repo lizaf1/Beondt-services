@@ -17,6 +17,7 @@ import Contact from '@/pages/Contact';
 import Quote from '@/pages/Quote';
 import QualityControl from '@/pages/QualityControl';
 import Blog from '@/pages/Blog';
+import BlogPostDetail from '@/pages/BlogPostDetail';
 
 import Login from '@/pages/admin/Login';
 import Dashboard from '@/pages/admin/Dashboard';
@@ -47,6 +48,7 @@ const AnimatedRoutes = () => {
         <Route path="/process" element={<PageWrapper><Process /></PageWrapper>} />
         <Route path="/quality-control" element={<PageWrapper><QualityControl /></PageWrapper>} />
         <Route path="/blog" element={<PageWrapper><Blog /></PageWrapper>} />
+        <Route path="/blog/:id" element={<PageWrapper><BlogPostDetail /></PageWrapper>} />
         <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
         <Route path="/quote" element={<PageWrapper><Quote /></PageWrapper>} />
         

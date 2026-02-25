@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @theme {
   --color-brand-green: #7cbd28;
@@ -25,4 +26,15 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-display tracking-wide;
   }
+}
+
+/* EasyMDE Overrides */
+.editor-toolbar {
+  @apply !border-0 !border-b !border-gray-200 !bg-gray-50 !rounded-t-xl !opacity-100;
+}
+.CodeMirror {
+  @apply !border-0 !font-mono !text-sm !min-h-[300px];
+}
+.editor-statusbar {
+  @apply !hidden;
 }
