@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Phone, Mail, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useContent } from '@/context/ContentContext';
@@ -79,31 +79,44 @@ export const Navbar = () => {
       </div>
 
       {/* Mobile Nav */}
-      {isOpen && (
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="md:hidden absolute top-full left-0 w-full bg-white border-b border-gray-100 shadow-lg max-h-[calc(100vh-80px)] overflow-y-auto"
-        >
-          <div className="px-4 py-4 flex flex-col">
-            <NavItem to="/" mobile onClick={() => setIsOpen(false)}>Home</NavItem>
-            <NavItem to="/about" mobile onClick={() => setIsOpen(false)}>About</NavItem>
-            <NavItem to="/industries" mobile onClick={() => setIsOpen(false)}>Industries</NavItem>
-            <NavItem to="/services" mobile onClick={() => setIsOpen(false)}>Services</NavItem>
-            <NavItem to="/process" mobile onClick={() => setIsOpen(false)}>Process</NavItem>
-            <NavItem to="/quality-control" mobile onClick={() => setIsOpen(false)}>Quality Control</NavItem>
-            <NavItem to="/blog" mobile onClick={() => setIsOpen(false)}>Blog</NavItem>
-            <NavItem to="/contact" mobile onClick={() => setIsOpen(false)}>Contact</NavItem>
-            <Link 
-              to="/quote" 
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="mt-4 bg-brand-green text-white text-center py-3 rounded font-medium uppercase tracking-wide"
+              className="md:hidden fixed inset-0 bg-black/50 z-40 top-[80px]"
+            />
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+              className="md:hidden fixed top-[80px] left-0 w-full bg-white border-b border-gray-100 shadow-xl z-50 max-h-[calc(100vh-80px)] overflow-y-auto"
             >
-              Request a Quote
-            </Link>
-          </div>
-        </motion.div>
-      )}
+              <div className="px-4 py-4 flex flex-col">
+                <NavItem to="/" mobile onClick={() => setIsOpen(false)}>Home</NavItem>
+                <NavItem to="/about" mobile onClick={() => setIsOpen(false)}>About</NavItem>
+                <NavItem to="/industries" mobile onClick={() => setIsOpen(false)}>Industries</NavItem>
+                <NavItem to="/services" mobile onClick={() => setIsOpen(false)}>Services</NavItem>
+                <NavItem to="/process" mobile onClick={() => setIsOpen(false)}>Process</NavItem>
+                <NavItem to="/quality-control" mobile onClick={() => setIsOpen(false)}>Quality Control</NavItem>
+                <NavItem to="/blog" mobile onClick={() => setIsOpen(false)}>Blog</NavItem>
+                <NavItem to="/contact" mobile onClick={() => setIsOpen(false)}>Contact</NavItem>
+                <Link 
+                  to="/quote" 
+                  onClick={() => setIsOpen(false)}
+                  className="mt-4 bg-brand-green text-white text-center py-3 rounded font-medium uppercase tracking-wide"
+                >
+                  Request a Quote
+                </Link>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </header>
   );
 };

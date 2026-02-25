@@ -15,7 +15,7 @@ const Hero = () => {
   const content = useContent();
   
   return (
-    <div className="relative min-h-[90vh] flex items-center bg-brand-dark py-20 md:py-0">
+    <div className="relative min-h-[100dvh] md:min-h-[90vh] flex items-center justify-center bg-brand-dark pt-28 pb-20 md:py-0 overflow-hidden">
       {/* Background Image Overlay */}
       <div className="absolute inset-0 z-0">
         <img 
@@ -23,38 +23,38 @@ const Hero = () => {
           alt="Industrial Factory" 
           className="w-full h-full object-cover opacity-30"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/90 to-brand-dark/40" />
+        <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-brand-dark/95 via-brand-dark/80 to-brand-dark/40" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-[-2rem] md:mt-0">
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="max-w-3xl"
         >
-          <div className="inline-block bg-brand-green/20 border border-brand-green/30 rounded px-4 py-1.5 mb-6">
-            <span className="text-brand-green font-medium tracking-wider text-sm uppercase">Premier China Sourcing Partner</span>
+          <div className="inline-block bg-brand-green/20 border border-brand-green/30 rounded px-3 py-1.5 mb-6">
+            <span className="text-brand-green font-medium tracking-wider text-xs sm:text-sm uppercase">Premier China Sourcing Partner</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-display font-bold text-white leading-tight mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold text-white leading-[1.1] mb-6">
             {content.home_hero_title ? (
               <span dangerouslySetInnerHTML={{ __html: content.home_hero_title.replace(/\n/g, '<br/>') }} />
             ) : (
               <>
-                China Industrial <br className="hidden sm:block" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-green to-lime-400">Sourcing Made Reliable</span>
+                China Industrial Sourcing <br className="hidden md:block" />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-green to-lime-400">Made Reliable</span>
               </>
             )}
           </h1>
-          <p className="text-lg sm:text-xl text-gray-300 mb-8 md:mb-10 leading-relaxed max-w-2xl">
+          <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-8 md:mb-10 leading-relaxed max-w-2xl">
             {content.home_hero_subtitle || "End-to-end sourcing, factory verification, quality control, and global logistics for machinery, electronics, agriculture technology, and construction materials."}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button asLink to="/quote" size="lg" className="group w-full sm:w-auto">
+            <Button asLink to="/quote" size="lg" className="group w-full sm:w-auto justify-center">
               Request a Quote 
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button asLink to="/contact" variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-brand-dark w-full sm:w-auto">
+            <Button asLink to="/contact" variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-brand-dark w-full sm:w-auto justify-center">
               Speak With Our Team
             </Button>
           </div>
