@@ -3,6 +3,7 @@ import { Layout } from '@/components/layout/Layout';
 import { Section } from '@/components/ui/Section';
 import { Button } from '@/components/ui/Button';
 import { getIcon } from '@/lib/icons';
+import { defaultIndustries } from '@/lib/defaultData';
 
 const IndustryDetail = ({ iconName, title, description, items }: { iconName: string, title: string, description: string, items: string[] }) => {
   const Icon = getIcon(iconName);
@@ -32,7 +33,10 @@ export default function Industries() {
 
   useEffect(() => {
     fetch('/api/industries')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok || res.headers.get('content-type')?.includes('text/html')) throw new Error('Not JSON');
+        return res.json();
+      })
       .then(data => {
         // Parse items if they are strings
         const parsedData = data.map((ind: any) => ({
@@ -40,7 +44,8 @@ export default function Industries() {
           items: typeof ind.items === 'string' ? JSON.parse(ind.items) : ind.items
         }));
         setIndustries(parsedData);
-      });
+      })
+      .catch(() => setIndustries(defaultIndustries));
   }, []);
 
   return (

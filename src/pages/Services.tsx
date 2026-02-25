@@ -3,6 +3,7 @@ import { Layout } from '@/components/layout/Layout';
 import { Section } from '@/components/ui/Section';
 import { Button } from '@/components/ui/Button';
 import { getIcon } from '@/lib/icons';
+import { defaultServices } from '@/lib/defaultData';
 
 const ServiceItem = ({ iconName, title, description }: { iconName: string, title: string, description: string }) => {
   const Icon = getIcon(iconName);
@@ -23,7 +24,13 @@ export default function Services() {
   const [services, setServices] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('/api/services').then(res => res.json()).then(data => setServices(data));
+    fetch('/api/services')
+      .then(res => {
+        if (!res.ok || res.headers.get('content-type')?.includes('text/html')) throw new Error('Not JSON');
+        return res.json();
+      })
+      .then(data => setServices(data))
+      .catch(() => setServices(defaultServices));
   }, []);
 
   return (

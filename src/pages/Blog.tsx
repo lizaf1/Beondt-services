@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { Section } from '@/components/ui/Section';
+import { defaultBlogPosts } from '@/lib/defaultData';
 
 const BlogPost = ({ title, date, excerpt, image }: { title: string, date: string, excerpt: string, image: string }) => (
   <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl hover:border-brand-green/20 transition-all duration-300 group cursor-pointer flex flex-col h-full">
@@ -27,7 +28,13 @@ export default function Blog() {
   const [posts, setPosts] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('/api/blog').then(res => res.json()).then(data => setPosts(data));
+    fetch('/api/blog')
+      .then(res => {
+        if (!res.ok || res.headers.get('content-type')?.includes('text/html')) throw new Error('Not JSON');
+        return res.json();
+      })
+      .then(data => setPosts(data))
+      .catch(() => setPosts(defaultBlogPosts));
   }, []);
 
   return (

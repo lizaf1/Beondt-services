@@ -11,6 +11,8 @@ import {
 import { useContent } from '@/context/ContentContext';
 import { getIcon } from '@/lib/icons';
 
+import { defaultIndustries, defaultServices } from '@/lib/defaultData';
+
 const Hero = () => {
   const content = useContent();
   
@@ -114,8 +116,21 @@ export default function Home() {
   const [services, setServices] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('/api/industries').then(res => res.json()).then(data => setIndustries(data.slice(0, 8)));
-    fetch('/api/services').then(res => res.json()).then(data => setServices(data.slice(0, 4)));
+    fetch('/api/industries')
+      .then(res => {
+        if (!res.ok || res.headers.get('content-type')?.includes('text/html')) throw new Error('Not JSON');
+        return res.json();
+      })
+      .then(data => setIndustries(data.slice(0, 8)))
+      .catch(() => setIndustries(defaultIndustries.slice(0, 8)));
+
+    fetch('/api/services')
+      .then(res => {
+        if (!res.ok || res.headers.get('content-type')?.includes('text/html')) throw new Error('Not JSON');
+        return res.json();
+      })
+      .then(data => setServices(data.slice(0, 4)))
+      .catch(() => setServices(defaultServices.slice(0, 4)));
   }, []);
 
   return (
