@@ -83,7 +83,7 @@ export const Navbar = () => {
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="md:hidden absolute top-full left-0 w-full bg-white border-b border-gray-100 shadow-lg"
+          className="md:hidden absolute top-full left-0 w-full bg-white border-b border-gray-100 shadow-lg max-h-[calc(100vh-80px)] overflow-y-auto"
         >
           <div className="px-4 py-4 flex flex-col">
             <NavItem to="/" mobile onClick={() => setIsOpen(false)}>Home</NavItem>
@@ -199,7 +199,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <Navbar />
-      <main className="flex-grow">
+      <main className="flex-grow overflow-x-hidden">
         {children}
       </main>
       <Footer />

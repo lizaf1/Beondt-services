@@ -9,7 +9,7 @@ const IndustryDetail = ({ iconName, title, description, items }: { iconName: str
   return (
     <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
       <div className="flex items-center gap-4 mb-6">
-        <div className="w-12 h-12 bg-brand-green/10 rounded-lg flex items-center justify-center">
+        <div className="w-12 h-12 bg-brand-green/10 rounded-lg flex items-center justify-center shrink-0">
           <Icon className="w-6 h-6 text-brand-green" />
         </div>
         <h3 className="text-xl font-bold font-display uppercase">{title}</h3>
@@ -57,13 +57,14 @@ export default function Industries() {
       <Section>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {industries.map((item) => (
-            <IndustryDetail 
-              key={item.id}
-              iconName={item.icon}
-              title={item.title}
-              description={item.description}
-              items={item.items || []}
-            />
+            <React.Fragment key={item.id}>
+              <IndustryDetail 
+                iconName={item.icon}
+                title={item.title}
+                description={item.description}
+                items={item.items || []}
+              />
+            </React.Fragment>
           ))}
         </div>
       </Section>

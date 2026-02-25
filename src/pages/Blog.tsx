@@ -3,15 +3,22 @@ import { Layout } from '@/components/layout/Layout';
 import { Section } from '@/components/ui/Section';
 
 const BlogPost = ({ title, date, excerpt, image }: { title: string, date: string, excerpt: string, image: string }) => (
-  <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all group cursor-pointer">
-    <div className="h-48 overflow-hidden">
-      <img src={image} alt={title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+  <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl hover:border-brand-green/20 transition-all duration-300 group cursor-pointer flex flex-col h-full">
+    <div className="h-56 overflow-hidden relative">
+      <div className="absolute inset-0 bg-brand-dark/20 group-hover:bg-transparent transition-colors z-10" />
+      <img src={image} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
     </div>
-    <div className="p-6">
-      <p className="text-xs text-brand-green font-bold uppercase tracking-wider mb-2">{date}</p>
-      <h3 className="text-xl font-bold font-display uppercase mb-3 group-hover:text-brand-green transition-colors">{title}</h3>
-      <p className="text-gray-600 text-sm mb-4 line-clamp-3">{excerpt}</p>
-      <span className="text-brand-dark font-medium text-sm border-b-2 border-brand-green pb-0.5">Read Article</span>
+    <div className="p-8 flex flex-col flex-grow">
+      <div className="flex items-center gap-3 mb-4">
+        <span className="w-8 h-0.5 bg-brand-green" />
+        <p className="text-xs text-gray-500 font-bold uppercase tracking-widest">{date}</p>
+      </div>
+      <h3 className="text-xl font-bold font-display uppercase mb-4 leading-tight group-hover:text-brand-green transition-colors">{title}</h3>
+      <p className="text-gray-600 text-sm mb-6 line-clamp-3 leading-relaxed flex-grow">{excerpt}</p>
+      <div className="mt-auto pt-6 border-t border-gray-100 flex items-center justify-between text-sm font-bold uppercase tracking-wide text-brand-dark group-hover:text-brand-green transition-colors">
+        <span>Read Article</span>
+        <span className="text-xl group-hover:translate-x-1 transition-transform">&rarr;</span>
+      </div>
     </div>
   </div>
 );
@@ -37,13 +44,14 @@ export default function Blog() {
       <Section>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post) => (
-            <BlogPost 
-              key={post.id}
-              title={post.title}
-              date={post.date}
-              excerpt={post.excerpt}
-              image={post.image}
-            />
+            <React.Fragment key={post.id}>
+              <BlogPost 
+                title={post.title}
+                date={post.date}
+                excerpt={post.excerpt}
+                image={post.image}
+              />
+            </React.Fragment>
           ))}
         </div>
       </Section>

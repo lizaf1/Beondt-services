@@ -13,7 +13,7 @@ export const Section = ({ children, className, id, dark = false }: SectionProps)
   <section 
     id={id} 
     className={cn(
-      "py-20 md:py-28 px-4 sm:px-6 lg:px-8",
+      "py-16 md:py-28 px-4 sm:px-6 lg:px-8",
       dark ? "bg-brand-gray" : "bg-white",
       className
     )}

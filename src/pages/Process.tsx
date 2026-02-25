@@ -4,9 +4,9 @@ import { Section, SectionHeader } from '@/components/ui/Section';
 import { Button } from '@/components/ui/Button';
 
 const ProcessStep = ({ number, title, description, details }: { number: string, title: string, description: string, details: string[] }) => (
-  <div className="flex flex-col md:flex-row gap-8 items-start relative pb-16 last:pb-0">
+  <div className="group flex flex-col md:flex-row gap-8 items-start relative pb-16 last:pb-0">
     {/* Line connecting steps */}
-    <div className="hidden md:block absolute left-8 top-16 bottom-0 w-0.5 bg-gray-200 last:hidden" />
+    <div className="hidden md:block absolute left-8 top-16 bottom-0 w-0.5 bg-gray-200 group-last:hidden" />
     
     <div className="shrink-0 w-16 h-16 rounded-full bg-brand-dark text-white flex items-center justify-center text-2xl font-bold font-display z-10 border-4 border-white shadow-lg">
       {number}

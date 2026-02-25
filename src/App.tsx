@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { motion, AnimatePresence } from 'framer-motion';
 import ScrollToTop from '@/components/layout/ScrollToTop';
 import Home from '@/pages/Home';
 import About from '@/pages/About';
@@ -21,6 +23,41 @@ import Dashboard from '@/pages/admin/Dashboard';
 
 import { ContentProvider } from '@/context/ContentContext';
 
+const PageWrapper = ({ children }: { children: React.ReactNode }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -10 }}
+    transition={{ duration: 0.3, ease: 'easeOut' }}
+  >
+    {children}
+  </motion.div>
+);
+
+const AnimatedRoutes = () => {
+  const location = useLocation();
+  
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location}>
+        <Route path="/" element={<PageWrapper><Home /></PageWrapper>} />
+        <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
+        <Route path="/industries" element={<PageWrapper><Industries /></PageWrapper>} />
+        <Route path="/services" element={<PageWrapper><Services /></PageWrapper>} />
+        <Route path="/process" element={<PageWrapper><Process /></PageWrapper>} />
+        <Route path="/quality-control" element={<PageWrapper><QualityControl /></PageWrapper>} />
+        <Route path="/blog" element={<PageWrapper><Blog /></PageWrapper>} />
+        <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
+        <Route path="/quote" element={<PageWrapper><Quote /></PageWrapper>} />
+        
+        {/* Admin Routes */}
+        <Route path="/admin/login" element={<PageWrapper><Login /></PageWrapper>} />
+        <Route path="/admin/dashboard" element={<PageWrapper><Dashboard /></PageWrapper>} />
+      </Routes>
+    </AnimatePresence>
+  );
+};
+
 export default function App() {
   return (
     <HelmetProvider>
@@ -32,21 +69,7 @@ export default function App() {
             <meta name="keywords" content="China industrial sourcing company, Machinery sourcing China, Building materials sourcing China, Marble granite supplier China, Electronics manufacturer China, Agricultural equipment sourcing China, OEM manufacturing China" />
           </Helmet>
           <ScrollToTop />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/industries" element={<Industries />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/process" element={<Process />} />
-            <Route path="/quality-control" element={<QualityControl />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/quote" element={<Quote />} />
-            
-            {/* Admin Routes */}
-            <Route path="/admin/login" element={<Login />} />
-            <Route path="/admin/dashboard" element={<Dashboard />} />
-          </Routes>
+          <AnimatedRoutes />
         </Router>
       </ContentProvider>
     </HelmetProvider>

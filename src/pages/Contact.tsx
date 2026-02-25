@@ -22,15 +22,15 @@ export default function Contact() {
       <Section>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <div>
-            <h2 className="text-3xl font-display font-bold uppercase mb-8">Get in Touch</h2>
-            <div className="space-y-8">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-brand-green/10 rounded-lg flex items-center justify-center shrink-0">
-                  <MapPin className="w-6 h-6 text-brand-green" />
+            <h2 className="text-3xl font-display font-bold uppercase mb-8 text-brand-dark">Get in Touch</h2>
+            <div className="space-y-6">
+              <div className="flex items-start gap-6 p-6 bg-gray-50 rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+                <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center shrink-0 shadow-sm text-brand-green">
+                  <MapPin className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold uppercase mb-1">China Headquarters</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-lg font-bold uppercase mb-2 text-brand-dark">China Headquarters</h3>
+                  <p className="text-gray-600 leading-relaxed">
                     {content.contact_address ? (
                       <span dangerouslySetInnerHTML={{ __html: content.contact_address.replace(/\n/g, '<br/>') }} />
                     ) : (
@@ -43,28 +43,31 @@ export default function Contact() {
                 </div>
               </div>
               
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-brand-green/10 rounded-lg flex items-center justify-center shrink-0">
-                  <Phone className="w-6 h-6 text-brand-green" />
+              <div className="flex items-start gap-6 p-6 bg-gray-50 rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+                <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center shrink-0 shadow-sm text-brand-green">
+                  <Phone className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold uppercase mb-1">Contact Numbers</h3>
-                  <p className="text-gray-600">Tel: {content.contact_phone || "+86 0551 6466 2624"}</p>
-                  <p className="text-gray-600">WhatsApp: {content.contact_whatsapp_1 || "+86 180-5518-2909"}</p>
-                  {content.contact_whatsapp_2 && (
-                    <p className="text-gray-600">WhatsApp: {content.contact_whatsapp_2}</p>
-                  )}
-                  <p className="text-sm text-gray-500 mt-1">Available Mon-Fri, 9am - 6pm (GMT+8)</p>
+                  <h3 className="text-lg font-bold uppercase mb-2 text-brand-dark">Contact Numbers</h3>
+                  <div className="space-y-1 text-gray-600">
+                    <p><span className="font-medium text-gray-900">Tel:</span> {content.contact_phone || "+86 0551 6466 2624"}</p>
+                    <p><span className="font-medium text-gray-900">WhatsApp:</span> {content.contact_whatsapp_1 || "+86 180-5518-2909"}</p>
+                    {content.contact_whatsapp_2 && (
+                      <p><span className="font-medium text-gray-900">WhatsApp:</span> {content.contact_whatsapp_2}</p>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-3 font-medium uppercase tracking-wide">Available Mon-Fri, 9am - 6pm (GMT+8)</p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-brand-green/10 rounded-lg flex items-center justify-center shrink-0">
-                  <Mail className="w-6 h-6 text-brand-green" />
+              <div className="flex items-start gap-6 p-6 bg-gray-50 rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
+                <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center shrink-0 shadow-sm text-brand-green">
+                  <Mail className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold uppercase mb-1">Email</h3>
-                  <p className="text-gray-600">{content.contact_email || "Info@beondt.net"}</p>
+                  <h3 className="text-lg font-bold uppercase mb-2 text-brand-dark">Email</h3>
+                  <p className="text-gray-600 font-medium">{content.contact_email || "Info@beondt.net"}</p>
+                  <p className="text-sm text-gray-500 mt-2">We aim to respond to all inquiries within 24 hours.</p>
                 </div>
               </div>
             </div>

@@ -7,12 +7,12 @@ import { getIcon } from '@/lib/icons';
 const ServiceItem = ({ iconName, title, description }: { iconName: string, title: string, description: string }) => {
   const Icon = getIcon(iconName);
   return (
-    <div className="flex gap-6 p-6 rounded-xl hover:bg-gray-50 transition-colors">
-      <div className="shrink-0 w-12 h-12 bg-brand-green/10 rounded-lg flex items-center justify-center">
-        <Icon className="w-6 h-6 text-brand-green" />
+    <div className="flex gap-6 p-8 rounded-xl bg-white border border-gray-100 shadow-sm hover:shadow-xl hover:border-brand-green/20 transition-all duration-300 group">
+      <div className="shrink-0 w-14 h-14 bg-brand-gray rounded-xl flex items-center justify-center group-hover:bg-brand-green transition-colors duration-300">
+        <Icon className="w-7 h-7 text-brand-dark group-hover:text-white transition-colors duration-300" />
       </div>
       <div>
-        <h3 className="text-xl font-bold font-display uppercase mb-3">{title}</h3>
+        <h3 className="text-xl font-bold font-display uppercase mb-3 group-hover:text-brand-green transition-colors">{title}</h3>
         <p className="text-gray-600 leading-relaxed">{description}</p>
       </div>
     </div>
@@ -40,12 +40,13 @@ export default function Services() {
       <Section>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
           {services.map((item) => (
-            <ServiceItem 
-              key={item.id}
-              iconName={item.icon}
-              title={item.title}
-              description={item.description}
-            />
+            <React.Fragment key={item.id}>
+              <ServiceItem 
+                iconName={item.icon}
+                title={item.title}
+                description={item.description}
+              />
+            </React.Fragment>
           ))}
         </div>
       </Section>

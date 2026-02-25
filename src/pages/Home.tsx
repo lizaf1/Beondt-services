@@ -15,7 +15,7 @@ const Hero = () => {
   const content = useContent();
   
   return (
-    <div className="relative h-[90vh] min-h-[600px] flex items-center overflow-hidden bg-brand-dark">
+    <div className="relative min-h-[90vh] flex items-center bg-brand-dark py-20 md:py-0">
       {/* Background Image Overlay */}
       <div className="absolute inset-0 z-0">
         <img 
@@ -36,25 +36,25 @@ const Hero = () => {
           <div className="inline-block bg-brand-green/20 border border-brand-green/30 rounded px-4 py-1.5 mb-6">
             <span className="text-brand-green font-medium tracking-wider text-sm uppercase">Premier China Sourcing Partner</span>
           </div>
-          <h1 className="text-5xl md:text-7xl font-display font-bold text-white leading-tight mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-display font-bold text-white leading-tight mb-6">
             {content.home_hero_title ? (
               <span dangerouslySetInnerHTML={{ __html: content.home_hero_title.replace(/\n/g, '<br/>') }} />
             ) : (
               <>
-                China Industrial <br />
+                China Industrial <br className="hidden sm:block" />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-green to-lime-400">Sourcing Made Reliable</span>
               </>
             )}
           </h1>
-          <p className="text-xl text-gray-300 mb-10 leading-relaxed max-w-2xl">
+          <p className="text-lg sm:text-xl text-gray-300 mb-8 md:mb-10 leading-relaxed max-w-2xl">
             {content.home_hero_subtitle || "End-to-end sourcing, factory verification, quality control, and global logistics for machinery, electronics, agriculture technology, and construction materials."}
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button asLink to="/quote" size="lg" className="group">
+            <Button asLink to="/quote" size="lg" className="group w-full sm:w-auto">
               Request a Quote 
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button asLink to="/contact" variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-brand-dark">
+            <Button asLink to="/contact" variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-brand-dark w-full sm:w-auto">
               Speak With Our Team
             </Button>
           </div>
@@ -154,7 +154,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="relative">
+          <div className="relative hidden xl:block">
             <div className="absolute -inset-4 bg-brand-green/10 rounded-xl transform rotate-3" />
             <img 
               src="https://images.unsplash.com/photo-1565514020176-dbf2277e3c66?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
@@ -184,13 +184,14 @@ export default function Home() {
         />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {industries.map((item) => (
-            <IndustryCard 
-              key={item.id}
-              iconName={item.icon}
-              title={item.title}
-              description={item.description}
-              image={item.image}
-            />
+            <React.Fragment key={item.id}>
+              <IndustryCard 
+                iconName={item.icon}
+                title={item.title}
+                description={item.description}
+                image={item.image}
+              />
+            </React.Fragment>
           ))}
           
           <div className="bg-brand-green rounded-xl p-8 flex flex-col justify-center items-center text-center text-white h-80">
@@ -209,12 +210,13 @@ export default function Home() {
         />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {services.map((item) => (
-            <ServiceCard 
-              key={item.id}
-              iconName={item.icon}
-              title={item.title}
-              description={item.description}
-            />
+            <React.Fragment key={item.id}>
+              <ServiceCard 
+                iconName={item.icon}
+                title={item.title}
+                description={item.description}
+              />
+            </React.Fragment>
           ))}
         </div>
         <div className="mt-12 text-center">
@@ -261,7 +263,7 @@ export default function Home() {
                 "Dedicated Project Managers"
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <div className="w-2 h-2 bg-brand-green rounded-full" />
+                  <div className="w-2 h-2 bg-brand-green rounded-full shrink-0" />
                   <span className="font-medium">{item}</span>
                 </div>
               ))}
