@@ -293,16 +293,32 @@ export default function Home() {
                 <span className="text-xs text-gray-400">USA, Canada, Mexico</span>
               </div>
               <div className="p-4 bg-white/5 rounded border border-white/5 text-center hover:bg-white/10 transition-colors">
+                <span className="block font-bold text-brand-green text-xl mb-1">South America</span>
+                <span className="text-xs text-gray-400">Brazil, Argentina, Chile, Colombia</span>
+              </div>
+              <div className="p-4 bg-white/5 rounded border border-white/5 text-center hover:bg-white/10 transition-colors">
+                <span className="block font-bold text-brand-green text-xl mb-1">Caribbean</span>
+                <span className="text-xs text-gray-400">Dominican Republic, Jamaica, Bahamas</span>
+              </div>
+              <div className="p-4 bg-white/5 rounded border border-white/5 text-center hover:bg-white/10 transition-colors">
                 <span className="block font-bold text-brand-green text-xl mb-1">Europe</span>
-                <span className="text-xs text-gray-400">UK, Germany, France</span>
+                <span className="text-xs text-gray-400">UK, Germany, France, Italy, Spain</span>
               </div>
               <div className="p-4 bg-white/5 rounded border border-white/5 text-center hover:bg-white/10 transition-colors">
                 <span className="block font-bold text-brand-green text-xl mb-1">Middle East</span>
-                <span className="text-xs text-gray-400">UAE, Saudi Arabia</span>
+                <span className="text-xs text-gray-400">UAE, Saudi Arabia, Iran, Qatar</span>
               </div>
               <div className="p-4 bg-white/5 rounded border border-white/5 text-center hover:bg-white/10 transition-colors">
                 <span className="block font-bold text-brand-green text-xl mb-1">Southeast Asia</span>
-                <span className="text-xs text-gray-400">Singapore, Malaysia</span>
+                <span className="text-xs text-gray-400">Indonesia, Singapore, Malaysia, Vietnam</span>
+              </div>
+              <div className="p-4 bg-white/5 rounded border border-white/5 text-center hover:bg-white/10 transition-colors">
+                <span className="block font-bold text-brand-green text-xl mb-1">Africa</span>
+                <span className="text-xs text-gray-400">South Africa, Egypt, Morocco, Algeria</span>
+              </div>
+              <div className="p-4 bg-white/5 rounded border border-white/5 text-center hover:bg-white/10 transition-colors">
+                <span className="block font-bold text-brand-green text-xl mb-1">Oceania</span>
+                <span className="text-xs text-gray-400">Australia, New Zealand</span>
               </div>
             </div>
           </div>
