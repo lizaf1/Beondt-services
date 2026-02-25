@@ -2,7 +2,7 @@ import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
-import db from './db';
+import db from './server/db';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
