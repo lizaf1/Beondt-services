@@ -98,7 +98,7 @@ if (contentCount.count === 0) {
   const insertContent = db.prepare('INSERT INTO content (key, value) VALUES (?, ?)');
   insertContent.run('home_hero_title', 'China Industrial Sourcing Made Reliable');
   insertContent.run('home_hero_subtitle', 'End-to-end sourcing, factory verification, quality control, and global logistics for machinery, electronics, agriculture technology, and construction materials.');
-  insertContent.run('contact_address', 'No. 90, Innovation Avenue, Hefei, Anhui, China');
+  insertContent.run('contact_address', '128 Wanshui Road, Hefei, Anhui, China');
   insertContent.run('contact_phone', '+86 0551 6466 2624');
   insertContent.run('contact_email', 'Info@beondt.net');
   insertContent.run('contact_whatsapp_1', '+86 180-5518-2909');

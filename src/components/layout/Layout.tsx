@@ -37,7 +37,7 @@ export const Navbar = () => {
       <div className="bg-brand-dark text-white text-xs py-2 px-4 hidden md:block">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex gap-6">
-            <span className="flex items-center gap-2"><MapPin className="w-3 h-3 text-brand-green" /> {content.contact_address || 'Hefei, Anhui, China'}</span>
+            <span className="flex items-center gap-2"><MapPin className="w-3 h-3 text-brand-green" /> {content.contact_address || '128 Wanshui Road, Hefei, Anhui, China'}</span>
             <span className="flex items-center gap-2"><Mail className="w-3 h-3 text-brand-green" /> {content.contact_email || 'Info@beondt.net'}</span>
           </div>
           <div className="flex gap-4">
@@ -179,7 +179,7 @@ export const Footer = () => {
             <ul className="space-y-4 text-sm text-gray-400">
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-brand-green shrink-0" />
-                <span>{content.contact_address || 'No. 90, Innovation Avenue, Hefei, Anhui, China'}</span>
+                <span>{content.contact_address || '128 Wanshui Road, Hefei, Anhui, China'}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-brand-green shrink-0" />
@@ -194,7 +194,7 @@ export const Footer = () => {
         </div>
         
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
-          <p>&copy; {new Date().getFullYear()} Anhui Beyondt Co., Ltd. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Anhui Beyondt Technology Co., Ltd. All rights reserved.</p>
           <div className="flex gap-6">
             <Link to="/privacy" className="hover:text-white">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-white">Terms of Service</Link>
