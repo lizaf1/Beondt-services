@@ -15,13 +15,22 @@ app.use(cookieParser());
 // Auth
 app.post('/api/auth/login', (req, res) => {
   const { username, password } = req.body;
+  console.log(`Login attempt for user: ${username}`);
+  
   try {
     const user = db.get('users', (u: any) => u.username === username);
     
-    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+    if (!user) {
+      console.log(`User not found: ${username}`);
+      return res.status(401).json({ error: 'User not found' });
+    }
     
-    if (!bcrypt.compareSync(password, user.password)) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+    const isMatch = bcrypt.compareSync(password, user.password);
+    if (!isMatch) {
+      console.log(`Password mismatch for user: ${username}`);
+      // For debugging purposes, log the hash and what we tried to compare
+      // console.log(`Stored hash: ${user.password}`);
+      return res.status(401).json({ error: 'Invalid password' });
     }
 
     const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '24h' });
@@ -30,6 +39,20 @@ app.post('/api/auth/login', (req, res) => {
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Debug endpoint to check users (remove in production if needed, but useful now)
+app.get('/api/debug/users', (req, res) => {
+  try {
+    const users = db.all('users').map((u: any) => ({ ...u, password: '[HIDDEN]' }));
+    res.json({ 
+      users, 
+      dbPath: process.env.VERCEL === '1' ? '/tmp/beondt-data.json' : 'beondt-data.json',
+      env: process.env.NODE_ENV
+    });
+  } catch (e) {
+    res.status(500).json({ error: String(e) });
   }
 });
 
