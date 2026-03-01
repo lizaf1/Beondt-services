@@ -28,28 +28,36 @@ class JsonDB {
   private data: DB;
 
   constructor() {
-    if (fs.existsSync(dbPath)) {
-      try {
-        this.data = JSON.parse(fs.readFileSync(dbPath, 'utf-8'));
-      } catch (e) {
-        console.error('Error reading DB, resetting:', e);
-        this.data = { ...defaultData };
+    this.data = { ...defaultData };
+    
+    try {
+      if (fs.existsSync(dbPath)) {
+        try {
+          const fileContent = fs.readFileSync(dbPath, 'utf-8');
+          if (fileContent) {
+            this.data = JSON.parse(fileContent);
+          }
+        } catch (e) {
+          console.error('Error reading DB, using defaults:', e);
+        }
+      } else {
+        this.save();
       }
-    } else {
-      this.data = { ...defaultData };
-      this.save();
+    } catch (e) {
+      console.error('Error checking DB existence, using defaults:', e);
     }
+    
     this.seed();
   }
 
   private save() {
     try {
-      // Only attempt to save if we have a valid path and it's writable
+      // Only attempt to save if we have a valid path
       if (dbPath) {
         fs.writeFileSync(dbPath, JSON.stringify(this.data, null, 2));
       }
     } catch (e) {
-      console.error('Failed to save database:', e);
+      console.error('Failed to save database (this is expected in read-only environments like Vercel if not using /tmp):', e);
     }
   }
 
