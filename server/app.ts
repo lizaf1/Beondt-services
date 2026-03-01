@@ -1,7 +1,7 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
-import db from './db';
+import db from './db.js';
 import bcrypt from 'bcryptjs';
 
 const app = express();
