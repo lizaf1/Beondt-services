@@ -119,7 +119,6 @@ class JsonDB {
       console.error('Seeding failed:', e);
     }
   }
-  }
 
   // Helper methods to mimic better-sqlite3 somewhat, but simplified for JSON
   get(table: keyof DB, where?: (item: any) => boolean) {
