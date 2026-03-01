@@ -4,6 +4,7 @@ import { Section } from '@/components/ui/Section';
 import { Button } from '@/components/ui/Button';
 import { getIcon } from '@/lib/icons';
 import { defaultServices } from '@/lib/defaultData';
+import { useContent } from '@/context/ContentContext';
 
 const ServiceItem = ({ iconName, title, description }: { iconName: string, title: string, description: string }) => {
   const Icon = getIcon(iconName);
@@ -21,6 +22,7 @@ const ServiceItem = ({ iconName, title, description }: { iconName: string, title
 };
 
 export default function Services() {
+  const content = useContent();
   const [services, setServices] = useState<any[]>([]);
 
   useEffect(() => {
@@ -37,9 +39,9 @@ export default function Services() {
     <Layout>
       <div className="bg-brand-dark text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-6xl font-display font-bold uppercase tracking-tight mb-6">Our Services</h1>
+          <h1 className="text-4xl md:text-6xl font-display font-bold uppercase tracking-tight mb-6">{content.services_header_title || 'Our Services'}</h1>
           <p className="text-xl text-gray-300 max-w-2xl">
-            Comprehensive procurement solutions designed to minimize risk and maximize value.
+            {content.services_header_subtitle || 'Comprehensive procurement solutions designed to minimize risk and maximize value.'}
           </p>
         </div>
       </div>

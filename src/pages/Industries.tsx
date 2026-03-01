@@ -4,6 +4,7 @@ import { Section } from '@/components/ui/Section';
 import { Button } from '@/components/ui/Button';
 import { getIcon } from '@/lib/icons';
 import { defaultIndustries } from '@/lib/defaultData';
+import { useContent } from '@/context/ContentContext';
 
 const IndustryDetail = ({ iconName, title, description, items }: { iconName: string, title: string, description: string, items: string[] }) => {
   const Icon = getIcon(iconName);
@@ -29,6 +30,7 @@ const IndustryDetail = ({ iconName, title, description, items }: { iconName: str
 };
 
 export default function Industries() {
+  const content = useContent();
   const [industries, setIndustries] = useState<any[]>([]);
 
   useEffect(() => {
@@ -52,9 +54,9 @@ export default function Industries() {
     <Layout>
       <div className="bg-brand-dark text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-6xl font-display font-bold uppercase tracking-tight mb-6">Industries We Serve</h1>
+          <h1 className="text-4xl md:text-6xl font-display font-bold uppercase tracking-tight mb-6">{content.industries_header_title || 'Industries We Serve'}</h1>
           <p className="text-xl text-gray-300 max-w-2xl">
-            Specialized sourcing expertise across key industrial and technical sectors.
+            {content.industries_header_subtitle || 'Specialized sourcing expertise across key industrial and technical sectors.'}
           </p>
         </div>
       </div>

@@ -12,9 +12,9 @@ export default function Contact() {
     <Layout>
       <div className="bg-brand-dark text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-6xl font-display font-bold uppercase tracking-tight mb-6">Contact Us</h1>
+          <h1 className="text-4xl md:text-6xl font-display font-bold uppercase tracking-tight mb-6">{content.contact_header_title || 'Contact Us'}</h1>
           <p className="text-xl text-gray-300 max-w-2xl">
-            Get in touch with our team to discuss your sourcing requirements.
+            {content.contact_header_subtitle || 'Get in touch with our team to discuss your sourcing requirements.'}
           </p>
         </div>
       </div>

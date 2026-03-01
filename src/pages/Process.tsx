@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { Section, SectionHeader } from '@/components/ui/Section';
 import { Button } from '@/components/ui/Button';
+import { useContent } from '@/context/ContentContext';
 
 const ProcessStep = ({ number, title, description, details }: { number: string, title: string, description: string, details: string[] }) => (
   <div className="group flex flex-col md:flex-row gap-8 items-start relative pb-16 last:pb-0">
@@ -28,13 +29,14 @@ const ProcessStep = ({ number, title, description, details }: { number: string, 
 );
 
 export default function Process() {
+  const content = useContent();
   return (
     <Layout>
       <div className="bg-brand-dark text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-6xl font-display font-bold uppercase tracking-tight mb-6">Our Sourcing Process</h1>
+          <h1 className="text-4xl md:text-6xl font-display font-bold uppercase tracking-tight mb-6">{content.process_header_title || 'Our Sourcing Process'}</h1>
           <p className="text-xl text-gray-300 max-w-2xl">
-            A proven, systematic approach to ensuring quality and efficiency in every project.
+            {content.process_header_subtitle || 'A proven, systematic approach to ensuring quality and efficiency in every project.'}
           </p>
         </div>
       </div>

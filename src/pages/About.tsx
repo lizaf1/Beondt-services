@@ -3,16 +3,18 @@ import { Layout } from '@/components/layout/Layout';
 import { Section, SectionHeader } from '@/components/ui/Section';
 import { Button } from '@/components/ui/Button';
 import { CheckCircle2, Users, Target, Award } from 'lucide-react';
+import { useContent } from '@/context/ContentContext';
 
 export default function About() {
+  const content = useContent();
   return (
     <Layout>
       {/* Header */}
       <div className="bg-brand-dark text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-6xl font-display font-bold uppercase tracking-tight mb-6">About BEONDT</h1>
+          <h1 className="text-4xl md:text-6xl font-display font-bold uppercase tracking-tight mb-6">{content.about_header_title || 'About BEONDT'}</h1>
           <p className="text-xl text-gray-300 max-w-2xl">
-            Your strategic partner for industrial sourcing in China. We combine local expertise with international standards.
+            {content.about_header_subtitle || 'Your strategic partner for industrial sourcing in China. We combine local expertise with international standards.'}
           </p>
         </div>
       </div>

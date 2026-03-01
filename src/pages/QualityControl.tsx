@@ -3,6 +3,7 @@ import { Layout } from '@/components/layout/Layout';
 import { Section, SectionHeader } from '@/components/ui/Section';
 import { Button } from '@/components/ui/Button';
 import { ShieldCheck, Search, FileCheck, AlertTriangle, CheckCircle } from 'lucide-react';
+import { useContent } from '@/context/ContentContext';
 
 const QCStep = ({ icon: Icon, title, description }: { icon: any, title: string, description: string }) => (
   <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all">
@@ -15,13 +16,14 @@ const QCStep = ({ icon: Icon, title, description }: { icon: any, title: string, 
 );
 
 export default function QualityControl() {
+  const content = useContent();
   return (
     <Layout>
       <div className="bg-brand-dark text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-6xl font-display font-bold uppercase tracking-tight mb-6">Quality Control</h1>
+          <h1 className="text-4xl md:text-6xl font-display font-bold uppercase tracking-tight mb-6">{content.quality_control_header_title || 'Quality Control'}</h1>
           <p className="text-xl text-gray-300 max-w-2xl">
-            Our rigorous inspection protocols ensure that every product meets your exact specifications.
+            {content.quality_control_header_subtitle || 'Our rigorous inspection protocols ensure that every product meets your exact specifications.'}
           </p>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { Section } from '@/components/ui/Section';
 import { defaultBlogPosts } from '@/lib/defaultData';
 
 import { useNavigate } from 'react-router-dom';
+import { useContent } from '@/context/ContentContext';
 
 const BlogPost = ({ id, title, date, excerpt, image }: { id: number, title: string, date: string, excerpt: string, image: string }) => {
   const navigate = useNavigate();
@@ -33,6 +34,7 @@ const BlogPost = ({ id, title, date, excerpt, image }: { id: number, title: stri
 };
 
 export default function Blog() {
+  const content = useContent();
   const [posts, setPosts] = useState<any[]>([]);
 
   useEffect(() => {
@@ -49,9 +51,9 @@ export default function Blog() {
     <Layout>
       <div className="bg-brand-dark text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-6xl font-display font-bold uppercase tracking-tight mb-6">Sourcing Insights</h1>
+          <h1 className="text-4xl md:text-6xl font-display font-bold uppercase tracking-tight mb-6">{content.blog_header_title || 'Sourcing Insights'}</h1>
           <p className="text-xl text-gray-300 max-w-2xl">
-            Expert advice, industry trends, and guides on sourcing from China.
+            {content.blog_header_subtitle || 'Expert advice, industry trends, and guides on sourcing from China.'}
           </p>
         </div>
       </div>

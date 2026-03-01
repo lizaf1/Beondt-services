@@ -38,7 +38,7 @@ interface ContentMap {
 }
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState<'industries' | 'services' | 'blog' | 'content'>('industries');
+  const [activeTab, setActiveTab] = useState<'industries' | 'services' | 'blog' | 'content' | 'pages'>('industries');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -243,6 +243,15 @@ export default function Dashboard() {
           >
             <Type className="w-4 h-4" /> Global Config
           </button>
+          <button 
+            onClick={() => setActiveTab('pages')}
+            className={cn(
+              "flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-sm font-bold uppercase tracking-wide",
+              activeTab === 'pages' ? "bg-brand-dark text-white shadow-lg" : "text-gray-500 hover:bg-gray-100"
+            )}
+          >
+            <LayoutGrid className="w-4 h-4" /> Page Headers
+          </button>
         </aside>
 
         {/* Main Content */}
@@ -257,10 +266,11 @@ export default function Dashboard() {
                   {activeTab === 'services' && 'Service Portfolio'}
                   {activeTab === 'blog' && 'Content Engine'}
                   {activeTab === 'content' && 'System Configuration'}
+                  {activeTab === 'pages' && 'Page Headers'}
                 </h2>
                 <p className="text-gray-500 text-sm">Manage and update your website's {activeTab} data in real-time.</p>
               </div>
-              {activeTab !== 'content' && (
+              {activeTab !== 'content' && activeTab !== 'pages' && (
                 <Button onClick={() => { setEditingId(0); setFormData({ items: [] }); }} size="md" className="shrink-0">
                   <Plus className="w-4 h-4 mr-2" /> Add Entry
                 </Button>
@@ -571,6 +581,37 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
+                </div>
+              )}
+              {activeTab === 'pages' && (
+                <div className="space-y-8">
+                  {['about', 'industries', 'services', 'process', 'quality_control', 'blog', 'contact', 'quote'].map((page) => (
+                    <div key={page} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                      <div className="flex items-center gap-3 mb-8 border-b pb-4">
+                        <LayoutGrid className="w-5 h-5 text-brand-green" />
+                        <h3 className="text-lg font-bold uppercase tracking-tight">{page.replace('_', ' ')} Page Header</h3>
+                      </div>
+                      <div className="grid grid-cols-1 gap-8">
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Header Title</label>
+                          <input 
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
+                            defaultValue={content[`${page}_header_title`]} 
+                            onBlur={(e) => saveContent(`${page}_header_title`, e.target.value)} 
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Header Subtitle</label>
+                          <textarea 
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
+                            rows={3}
+                            defaultValue={content[`${page}_header_subtitle`]} 
+                            onBlur={(e) => saveContent(`${page}_header_subtitle`, e.target.value)} 
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
