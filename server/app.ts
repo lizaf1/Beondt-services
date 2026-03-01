@@ -41,14 +41,20 @@ app.post('/api/auth/login', (req, res) => {
       }
     }
 
-    // If not found via Env, check DB
+    // If not found via Env, check DB (safely)
     if (!user) {
-        const dbUser = db.get('users', (u: any) => u.username === username);
-        if (dbUser) {
-            isMatch = bcrypt.compareSync(password, dbUser.password);
-            if (isMatch) {
-                user = dbUser;
-            }
+        try {
+          const dbUser = db.get('users', (u: any) => u.username === username);
+          if (dbUser) {
+              isMatch = bcrypt.compareSync(password, dbUser.password);
+              if (isMatch) {
+                  user = dbUser;
+              }
+          }
+        } catch (dbError) {
+          console.error('Database lookup failed during auth:', dbError);
+          // Do not fail the request, just continue. 
+          // If env auth failed and DB auth crashed, user remains null and we return 401 below.
         }
     }
     
