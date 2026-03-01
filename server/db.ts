@@ -1,7 +1,15 @@
 import Database from 'better-sqlite3';
 import bcrypt from 'bcryptjs';
+import path from 'path';
+import fs from 'fs';
 
-const db = new Database('beondt.db');
+// Determine if running on Vercel
+const isVercel = process.env.VERCEL === '1';
+const dbPath = isVercel ? '/tmp/beondt.db' : 'beondt.db';
+
+console.log(`Initializing database at: ${dbPath}`);
+
+const db = new Database(dbPath);
 
 // Initialize tables
 db.exec(`
@@ -45,9 +53,14 @@ db.exec(`
 
 // Seed Admin User (admin / admin123)
 const adminUser = db.prepare('SELECT * FROM users WHERE username = ?').get('admin');
+const adminHash = bcrypt.hashSync('admin123', 10);
+
 if (!adminUser) {
-  const hash = bcrypt.hashSync('admin123', 10);
-  db.prepare('INSERT INTO users (username, password) VALUES (?, ?)').run('admin', hash);
+  console.log('Creating admin user');
+  db.prepare('INSERT INTO users (username, password) VALUES (?, ?)').run('admin', adminHash);
+} else {
+  console.log('Resetting admin password');
+  db.prepare('UPDATE users SET password = ? WHERE username = ?').run(adminHash, 'admin');
 }
 
 // Seed Initial Data if empty
