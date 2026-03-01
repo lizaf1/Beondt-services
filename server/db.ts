@@ -57,7 +57,7 @@ class JsonDB {
         fs.writeFileSync(dbPath, JSON.stringify(this.data, null, 2));
       }
     } catch (e) {
-      console.error('Failed to save database (this is expected in read-only environments like Vercel if not using /tmp):', e);
+      console.error('Failed to save database (expected in read-only environments like Vercel if not using /tmp):', e);
     }
   }
 
