@@ -49,7 +49,7 @@ class JsonDB {
   private seed() {
     // Seed Admin User
     const adminUser = this.data.users.find(u => u.username === 'admin');
-    const adminHash = bcrypt.hashSync('admin123', 10);
+    const adminHash = bcrypt.hashSync('Beondt2024!', 10);
 
     if (!adminUser) {
       console.log('Creating admin user');

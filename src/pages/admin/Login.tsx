@@ -22,8 +22,15 @@ export default function Login() {
       if (res.ok) {
         navigate('/admin/dashboard');
       } else {
-        const data = await res.json();
-        setError(data.error || 'Invalid credentials');
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const data = await res.json();
+          setError(data.error || 'Invalid credentials');
+        } else {
+          const text = await res.text();
+          console.error('Login failed with non-JSON response:', text);
+          setError(`Login failed: Server returned ${res.status} ${res.statusText}. See console for details.`);
+        }
       }
     } catch (err: any) {
       console.error('Login error details:', err);

@@ -18,23 +18,56 @@ app.post('/api/auth/login', (req, res) => {
   console.log(`Login attempt for user: ${username}`);
   
   try {
-    const user = db.get('users', (u: any) => u.username === username);
+    // ROBUST AUTH STRATEGY:
+    // 1. Check environment variables/hardcoded fallback first (Guaranteed access)
+    // 2. Check database second (Dynamic users)
     
-    if (!user) {
-      console.log(`User not found: ${username}`);
-      return res.status(401).json({ error: 'User not found' });
-    }
+    const ADMIN_USER = process.env.ADMIN_USER || 'admin';
+    const ADMIN_PASS = process.env.ADMIN_PASSWORD || 'Beondt2024!'; // New robust password
     
-    const isMatch = bcrypt.compareSync(password, user.password);
-    if (!isMatch) {
-      console.log(`Password mismatch for user: ${username}`);
-      // For debugging purposes, log the hash and what we tried to compare
-      // console.log(`Stored hash: ${user.password}`);
-      return res.status(401).json({ error: 'Invalid password' });
+    let user = null;
+    let isMatch = false;
+
+    // Check Hardcoded/Env Admin
+    if (username === ADMIN_USER) {
+      // Direct string comparison for env var (or use bcrypt if you hash the env var)
+      // For simplicity and robustness here, we compare directly if it's the fallback
+      if (password === ADMIN_PASS) {
+        user = { id: 0, username: ADMIN_USER, role: 'admin' };
+        isMatch = true;
+      } else {
+         // If env var didn't match, check if it's hashed in DB (unlikely for env, but good practice)
+         // But here we just fail this check and fall through to DB check
+      }
     }
 
+    // If not found via Env, check DB
+    if (!user) {
+        const dbUser = db.get('users', (u: any) => u.username === username);
+        if (dbUser) {
+            isMatch = bcrypt.compareSync(password, dbUser.password);
+            if (isMatch) {
+                user = dbUser;
+            }
+        }
+    }
+    
+    if (!user || !isMatch) {
+      console.log(`Auth failed for: ${username}`);
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    console.log(`Auth successful for: ${username}`);
     const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '24h' });
-    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+    
+    // Set cookie
+    res.cookie('token', token, { 
+        httpOnly: true, 
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax', // 'strict' can cause issues with some redirects
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    });
+    
     res.json({ success: true, user: { username: user.username } });
   } catch (error) {
     console.error('Login error:', error);
