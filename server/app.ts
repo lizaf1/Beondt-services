@@ -16,7 +16,7 @@ app.use(cookieParser());
 app.post('/api/auth/login', (req, res) => {
   const { username, password } = req.body;
   try {
-    const user = db.prepare('SELECT * FROM users WHERE username = ?').get(username) as any;
+    const user = db.get('users', (u: any) => u.username === username);
     
     if (!user) return res.status(401).json({ error: 'Invalid credentials' });
     
@@ -67,7 +67,7 @@ const requireAuth = (req: any, res: any, next: any) => {
 // Industries
 app.get('/api/industries', (req, res) => {
   try {
-    const industries = db.prepare('SELECT * FROM industries').all();
+    const industries = db.all('industries');
     res.json(industries.map((i: any) => ({ ...i, items: JSON.parse(i.items || '[]') })));
   } catch (error) {
     res.status(500).json({ error: 'Database error' });
@@ -76,70 +76,72 @@ app.get('/api/industries', (req, res) => {
 
 app.post('/api/industries', requireAuth, (req, res) => {
   const { title, description, icon, items, image } = req.body;
-  const info = db.prepare('INSERT INTO industries (title, description, icon, items, image) VALUES (?, ?, ?, ?, ?)').run(title, description, icon, JSON.stringify(items), image);
+  const info = db.insert('industries', { title, description, icon, items: JSON.stringify(items), image });
   res.json({ id: info.lastInsertRowid });
 });
 
 app.put('/api/industries/:id', requireAuth, (req, res) => {
   const { title, description, icon, items, image } = req.body;
-  db.prepare('UPDATE industries SET title = ?, description = ?, icon = ?, items = ?, image = ? WHERE id = ?').run(title, description, icon, JSON.stringify(items), image, req.params.id);
+  db.update('industries', parseInt(req.params.id), { title, description, icon, items: JSON.stringify(items), image });
   res.json({ success: true });
 });
 
 app.delete('/api/industries/:id', requireAuth, (req, res) => {
-  db.prepare('DELETE FROM industries WHERE id = ?').run(req.params.id);
+  db.delete('industries', parseInt(req.params.id));
   res.json({ success: true });
 });
 
 // Services
 app.get('/api/services', (req, res) => {
-  const services = db.prepare('SELECT * FROM services').all();
+  const services = db.all('services');
   res.json(services);
 });
 
 app.post('/api/services', requireAuth, (req, res) => {
   const { title, description, icon } = req.body;
-  const info = db.prepare('INSERT INTO services (title, description, icon) VALUES (?, ?, ?)').run(title, description, icon);
+  const info = db.insert('services', { title, description, icon });
   res.json({ id: info.lastInsertRowid });
 });
 
 app.put('/api/services/:id', requireAuth, (req, res) => {
   const { title, description, icon } = req.body;
-  db.prepare('UPDATE services SET title = ?, description = ?, icon = ? WHERE id = ?').run(title, description, icon, req.params.id);
+  db.update('services', parseInt(req.params.id), { title, description, icon });
   res.json({ success: true });
 });
 
 app.delete('/api/services/:id', requireAuth, (req, res) => {
-  db.prepare('DELETE FROM services WHERE id = ?').run(req.params.id);
+  db.delete('services', parseInt(req.params.id));
   res.json({ success: true });
 });
 
 // Blog Posts
 app.get('/api/blog', (req, res) => {
-  const posts = db.prepare('SELECT * FROM blog_posts ORDER BY id DESC').all();
+  const posts = db.all('blog_posts');
+  // Sort by ID desc manually since JSON array order is insertion order
+  posts.sort((a: any, b: any) => b.id - a.id);
   res.json(posts);
 });
 
 app.post('/api/blog', requireAuth, (req, res) => {
   const { title, date, excerpt, content, image } = req.body;
-  const info = db.prepare('INSERT INTO blog_posts (title, date, excerpt, content, image) VALUES (?, ?, ?, ?, ?)').run(title, date, excerpt, content, image);
+  const info = db.insert('blog_posts', { title, date, excerpt, content, image });
   res.json({ id: info.lastInsertRowid });
 });
 
 app.put('/api/blog/:id', requireAuth, (req, res) => {
   const { title, date, excerpt, content, image } = req.body;
-  db.prepare('UPDATE blog_posts SET title = ?, date = ?, excerpt = ?, content = ?, image = ? WHERE id = ?').run(title, date, excerpt, content, image, req.params.id);
+  db.update('blog_posts', parseInt(req.params.id), { title, date, excerpt, content, image });
   res.json({ success: true });
 });
 
 app.delete('/api/blog/:id', requireAuth, (req, res) => {
-  db.prepare('DELETE FROM blog_posts WHERE id = ?').run(req.params.id);
+  db.delete('blog_posts', parseInt(req.params.id));
   res.json({ success: true });
 });
 
 // General Content
 app.get('/api/content', (req, res) => {
-  const content = db.prepare('SELECT * FROM content').all();
+  const content = db.all('content');
   const contentMap = content.reduce((acc: any, curr: any) => {
     acc[curr.key] = curr.value;
     return acc;
@@ -149,11 +151,11 @@ app.get('/api/content', (req, res) => {
 
 app.post('/api/content', requireAuth, (req, res) => {
   const { key, value } = req.body;
-  const existing = db.prepare('SELECT * FROM content WHERE key = ?').get(key);
+  const existing = db.get('content', (c: any) => c.key === key);
   if (existing) {
-    db.prepare('UPDATE content SET value = ? WHERE key = ?').run(value, key);
+    db.updateWhere('content', (c: any) => c.key === key, { value });
   } else {
-    db.prepare('INSERT INTO content (key, value) VALUES (?, ?)').run(key, value);
+    db.insert('content', { key, value });
   }
   res.json({ success: true });
 });
