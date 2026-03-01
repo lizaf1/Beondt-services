@@ -22,7 +22,8 @@ export default function Login() {
       if (res.ok) {
         navigate('/admin/dashboard');
       } else {
-        setError('Invalid credentials');
+        const data = await res.json();
+        setError(data.error || 'Invalid credentials');
       }
     } catch (err) {
       setError('Login failed');
