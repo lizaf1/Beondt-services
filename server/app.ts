@@ -14,7 +14,31 @@ app.use(cookieParser());
 
 // Auth
 app.post('/api/auth/login', (req, res) => {
-  const { username, password } = req.body;
+  // Handle Vercel serverless function body parsing
+  let body = req.body;
+  
+  // If body is empty or undefined, default to empty object
+  if (!body) {
+    body = {};
+  } else if (typeof body === 'string') {
+    try {
+      body = JSON.parse(body);
+    } catch (e) {
+      console.error('Failed to parse body:', e);
+      body = {};
+    }
+  } else if (Buffer.isBuffer(body)) {
+      try {
+          body = JSON.parse(body.toString());
+      } catch (e) {
+          console.error('Failed to parse Buffer body:', e);
+          body = {};
+      }
+  }
+  
+  const username = body.username;
+  const password = body.password;
+  
   console.log(`Login attempt for user: ${username}`);
   
   try {
