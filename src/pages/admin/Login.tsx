@@ -25,8 +25,9 @@ export default function Login() {
         const data = await res.json();
         setError(data.error || 'Invalid credentials');
       }
-    } catch (err) {
-      setError('Login failed');
+    } catch (err: any) {
+      console.error('Login error details:', err);
+      setError(`Login failed: ${err.message || 'Unknown error'}`);
     }
   };
 

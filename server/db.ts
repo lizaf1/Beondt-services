@@ -2,9 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import bcrypt from 'bcryptjs';
 
-// Determine if running on Vercel
-const isVercel = process.env.VERCEL === '1';
-const dbPath = isVercel ? '/tmp/beondt-data.json' : path.resolve('beondt-data.json');
+// Determine if running on Vercel or production environment where root might be read-only
+const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
+const dbPath = isProduction ? '/tmp/beondt-data.json' : path.resolve('beondt-data.json');
 
 console.log(`Initializing JSON database at: ${dbPath}`);
 
