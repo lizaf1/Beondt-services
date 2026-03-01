@@ -112,6 +112,7 @@ const Step = ({ number, title, description }: { number: string, title: string, d
 );
 
 export default function Home() {
+  const content = useContent();
   const [industries, setIndustries] = useState<any[]>([]);
   const [services, setServices] = useState<any[]>([]);
 
@@ -142,13 +143,13 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
             <SectionHeader 
-              title="Your Trusted China Sourcing Partner" 
-              subtitle="Bridging international buyers with qualified and verified Chinese manufacturers."
+              title={content.home_about_title || "Your Trusted China Sourcing Partner"} 
+              subtitle={content.home_about_subtitle || "Bridging international buyers with qualified and verified Chinese manufacturers."}
               centered={false}
             />
             <div className="space-y-6 text-gray-600 leading-relaxed">
               <p>
-                BEONDT Sourcing specializes in technical, industrial, and large-scale procurement projects. We don't just find suppliers; we engineer supply chains that ensure cost efficiency, strict quality control, and transparent project execution.
+                {content.home_about_text || "BEONDT Sourcing specializes in technical, industrial, and large-scale procurement projects. We don't just find suppliers; we engineer supply chains that ensure cost efficiency, strict quality control, and transparent project execution."}
               </p>
               <ul className="space-y-4 mt-8">
                 {[

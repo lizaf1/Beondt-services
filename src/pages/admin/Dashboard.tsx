@@ -438,6 +438,33 @@ export default function Dashboard() {
                 <div className="space-y-8">
                   <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
                     <div className="flex items-center gap-3 mb-8 border-b pb-4">
+                      <Settings className="w-5 h-5 text-brand-green" />
+                      <h3 className="text-lg font-bold uppercase tracking-tight">Site Settings</h3>
+                    </div>
+                    <div className="grid grid-cols-1 gap-8">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Logo URL</label>
+                        <input 
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
+                          placeholder="/logo.png"
+                          defaultValue={content['logo_url']} 
+                          onBlur={(e) => saveContent('logo_url', e.target.value)} 
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Footer About Text</label>
+                        <textarea 
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
+                          rows={3}
+                          defaultValue={content['footer_about_text']} 
+                          onBlur={(e) => saveContent('footer_about_text', e.target.value)} 
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                    <div className="flex items-center gap-3 mb-8 border-b pb-4">
                       <LayoutGrid className="w-5 h-5 text-brand-green" />
                       <h3 className="text-lg font-bold uppercase tracking-tight">Hero Section Configuration</h3>
                     </div>
@@ -457,6 +484,40 @@ export default function Dashboard() {
                           rows={3}
                           defaultValue={content['home_hero_subtitle']} 
                           onBlur={(e) => saveContent('home_hero_subtitle', e.target.value)} 
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                    <div className="flex items-center gap-3 mb-8 border-b pb-4">
+                      <FileText className="w-5 h-5 text-brand-green" />
+                      <h3 className="text-lg font-bold uppercase tracking-tight">Home About Section</h3>
+                    </div>
+                    <div className="grid grid-cols-1 gap-8">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">About Title</label>
+                        <input 
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
+                          defaultValue={content['home_about_title']} 
+                          onBlur={(e) => saveContent('home_about_title', e.target.value)} 
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">About Subtitle</label>
+                        <input 
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
+                          defaultValue={content['home_about_subtitle']} 
+                          onBlur={(e) => saveContent('home_about_subtitle', e.target.value)} 
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">About Text</label>
+                        <textarea 
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
+                          rows={5}
+                          defaultValue={content['home_about_text']} 
+                          onBlur={(e) => saveContent('home_about_text', e.target.value)} 
                         />
                       </div>
                     </div>

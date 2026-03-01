@@ -5,15 +5,18 @@ import { Menu, X, Phone, Mail, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useContent } from '@/context/ContentContext';
 
-const Logo = () => (
-  <Link to="/" className="flex items-center gap-2 group">
-    <img 
-      src="/logo.png" 
-      alt="BEONDT Sourcing" 
-      className="h-12 w-auto object-contain" 
-    />
-  </Link>
-);
+const Logo = () => {
+  const content = useContent();
+  return (
+    <Link to="/" className="flex items-center gap-2 group">
+      <img 
+        src={content.logo_url || "/logo.png"} 
+        alt="BEONDT Sourcing" 
+        className="h-12 w-auto object-contain" 
+      />
+    </Link>
+  );
+};
 
 const NavItem = ({ to, children, mobile = false, onClick }: { to: string; children: React.ReactNode; mobile?: boolean; onClick?: () => void }) => (
   <Link
@@ -131,13 +134,13 @@ export const Footer = () => {
           <div>
             <div className="flex items-center gap-1 mb-6">
               <img 
-                src="/logo.png" 
+                src={content.logo_url || "/logo.png"} 
                 alt="BEONDT Sourcing" 
                 className="h-10 w-auto object-contain" 
               />
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              Your trusted China sourcing partner. We bridge international buyers with qualified manufacturers, ensuring quality, efficiency, and transparency.
+              {content.footer_about_text || "Your trusted China sourcing partner. We bridge international buyers with qualified manufacturers, ensuring quality, efficiency, and transparency."}
             </p>
             <div className="flex gap-4">
               {/* Social placeholders */}
