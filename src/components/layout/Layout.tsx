@@ -24,7 +24,7 @@ const NavItem = ({ to, children, mobile = false, onClick }: { to: string; childr
     onClick={onClick}
     className={cn(
       "font-medium transition-colors hover:text-brand-green uppercase tracking-wide text-sm",
-      mobile ? "block py-3 text-lg border-b border-gray-100" : "text-gray-700"
+      mobile ? "block py-3 text-lg border-b border-gray-100 text-gray-800" : "text-gray-200"
     )}
   >
     {children}
@@ -36,8 +36,8 @@ export const Navbar = () => {
   const content = useContent();
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
-      <div className="bg-brand-dark text-white text-xs py-2 px-4 hidden md:block">
+    <header className="sticky top-0 z-50 w-full bg-brand-dark backdrop-blur-sm border-b border-white/10 shadow-sm">
+      <div className="bg-black/20 text-gray-300 text-xs py-2 px-4 hidden md:block border-b border-white/5">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex gap-6">
             <span className="flex items-center gap-2"><MapPin className="w-3 h-3 text-brand-green" /> {content.contact_address || '128 Wanshui Road, Hefei, Anhui, China'}</span>
@@ -73,7 +73,7 @@ export const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button 
-            className="md:hidden p-2 text-gray-600"
+            className="md:hidden p-2 text-gray-200"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X /> : <Menu />}
