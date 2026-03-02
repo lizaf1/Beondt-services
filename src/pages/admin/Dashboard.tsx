@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
-import { Plus, Trash2, Edit, Save, X, LayoutGrid, FileText, Settings, Type, Phone } from 'lucide-react';
+import { Plus, Trash2, Edit, Save, X, LayoutGrid, FileText, Settings, Type, Phone, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import SimpleMDE from 'react-simplemde-editor';
@@ -37,8 +37,20 @@ interface ContentMap {
   [key: string]: string;
 }
 
+interface Enquiry {
+  id: number;
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
+  message: string;
+  type: string;
+  date: string;
+  status: string;
+}
+
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState<'industries' | 'services' | 'blog' | 'content' | 'pages'>('industries');
+  const [activeTab, setActiveTab] = useState<'industries' | 'services' | 'blog' | 'content' | 'pages' | 'enquiries'>('industries');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -47,6 +59,7 @@ export default function Dashboard() {
   const [services, setServices] = useState<Service[]>([]);
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [content, setContent] = useState<ContentMap>({});
+  const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
 
   // Edit States
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -65,17 +78,19 @@ export default function Dashboard() {
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      const [indRes, servRes, blogRes, contRes] = await Promise.all([
+      const [indRes, servRes, blogRes, contRes, enqRes] = await Promise.all([
         fetch('/api/industries'),
         fetch('/api/services'),
         fetch('/api/blog'),
-        fetch('/api/content')
+        fetch('/api/content'),
+        fetch('/api/enquiries')
       ]);
 
       setIndustries(await indRes.json());
       setServices(await servRes.json());
       setBlogPosts(await blogRes.json());
       setContent(await contRes.json());
+      setEnquiries(await enqRes.json());
     } catch (error) {
       console.error('Failed to fetch data', error);
     } finally {
@@ -160,6 +175,25 @@ export default function Dashboard() {
     }
   };
 
+  // Enquiries Handlers
+  const handleUpdateEnquiryStatus = async (id: number, status: string) => {
+    const res = await fetch(`/api/enquiries/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status })
+    });
+    if (res.ok) {
+      fetchAllData();
+    }
+  };
+
+  const deleteEnquiry = async (id: number) => {
+    if (confirm('Are you sure you want to delete this enquiry?')) {
+      await fetch(`/api/enquiries/${id}`, { method: 'DELETE' });
+      fetchAllData();
+    }
+  };
+
   // Content Handlers
   const saveContent = async (key: string, value: string) => {
     await fetch('/api/content', {
@@ -203,54 +237,63 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <div className="flex flex-grow overflow-hidden">
+      <div className="flex flex-col md:flex-row flex-grow overflow-hidden">
         {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col p-4 gap-2">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-4 mb-2">Management</p>
+        <aside className="w-full md:w-64 bg-white border-b md:border-r md:border-b-0 border-gray-200 flex flex-row md:flex-col p-4 gap-2 overflow-x-auto shrink-0">
+          <p className="hidden md:block text-[10px] font-bold text-gray-400 uppercase tracking-widest px-4 mb-2">Management</p>
           <button 
             onClick={() => setActiveTab('industries')}
             className={cn(
-              "flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-sm font-bold uppercase tracking-wide",
+              "flex items-center gap-2 md:gap-3 px-4 py-2 md:py-3 rounded-lg transition-all text-xs md:text-sm font-bold uppercase tracking-wide whitespace-nowrap",
               activeTab === 'industries' ? "bg-brand-dark text-white shadow-lg" : "text-gray-500 hover:bg-gray-100"
             )}
           >
-            <LayoutGrid className="w-4 h-4" /> Industries
+            <LayoutGrid className="w-4 h-4 shrink-0" /> Industries
           </button>
           <button 
             onClick={() => setActiveTab('services')}
             className={cn(
-              "flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-sm font-bold uppercase tracking-wide",
+              "flex items-center gap-2 md:gap-3 px-4 py-2 md:py-3 rounded-lg transition-all text-xs md:text-sm font-bold uppercase tracking-wide whitespace-nowrap",
               activeTab === 'services' ? "bg-brand-dark text-white shadow-lg" : "text-gray-500 hover:bg-gray-100"
             )}
           >
-            <Settings className="w-4 h-4" /> Services
+            <Settings className="w-4 h-4 shrink-0" /> Services
           </button>
           <button 
             onClick={() => setActiveTab('blog')}
             className={cn(
-              "flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-sm font-bold uppercase tracking-wide",
+              "flex items-center gap-2 md:gap-3 px-4 py-2 md:py-3 rounded-lg transition-all text-xs md:text-sm font-bold uppercase tracking-wide whitespace-nowrap",
               activeTab === 'blog' ? "bg-brand-dark text-white shadow-lg" : "text-gray-500 hover:bg-gray-100"
             )}
           >
-            <FileText className="w-4 h-4" /> Blog Engine
+            <FileText className="w-4 h-4 shrink-0" /> Blog Engine
           </button>
           <button 
             onClick={() => setActiveTab('content')}
             className={cn(
-              "flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-sm font-bold uppercase tracking-wide",
+              "flex items-center gap-2 md:gap-3 px-4 py-2 md:py-3 rounded-lg transition-all text-xs md:text-sm font-bold uppercase tracking-wide whitespace-nowrap",
               activeTab === 'content' ? "bg-brand-dark text-white shadow-lg" : "text-gray-500 hover:bg-gray-100"
             )}
           >
-            <Type className="w-4 h-4" /> Global Config
+            <Type className="w-4 h-4 shrink-0" /> Global Config
           </button>
           <button 
             onClick={() => setActiveTab('pages')}
             className={cn(
-              "flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-sm font-bold uppercase tracking-wide",
+              "flex items-center gap-2 md:gap-3 px-4 py-2 md:py-3 rounded-lg transition-all text-xs md:text-sm font-bold uppercase tracking-wide whitespace-nowrap",
               activeTab === 'pages' ? "bg-brand-dark text-white shadow-lg" : "text-gray-500 hover:bg-gray-100"
             )}
           >
-            <LayoutGrid className="w-4 h-4" /> Page Headers
+            <LayoutGrid className="w-4 h-4 shrink-0" /> Page Headers
+          </button>
+          <button 
+            onClick={() => setActiveTab('enquiries')}
+            className={cn(
+              "flex items-center gap-2 md:gap-3 px-4 py-2 md:py-3 rounded-lg transition-all text-xs md:text-sm font-bold uppercase tracking-wide whitespace-nowrap",
+              activeTab === 'enquiries' ? "bg-brand-dark text-white shadow-lg" : "text-gray-500 hover:bg-gray-100"
+            )}
+          >
+            <MessageSquare className="w-4 h-4 shrink-0" /> Enquiries
           </button>
         </aside>
 
@@ -267,10 +310,11 @@ export default function Dashboard() {
                   {activeTab === 'blog' && 'Content Engine'}
                   {activeTab === 'content' && 'System Configuration'}
                   {activeTab === 'pages' && 'Page Headers'}
+                  {activeTab === 'enquiries' && 'Customer Enquiries'}
                 </h2>
                 <p className="text-gray-500 text-sm">Manage and update your website's {activeTab} data in real-time.</p>
               </div>
-              {activeTab !== 'content' && activeTab !== 'pages' && (
+              {activeTab !== 'content' && activeTab !== 'pages' && activeTab !== 'enquiries' && (
                 <Button onClick={() => { setEditingId(0); setFormData({ items: [] }); }} size="md" className="shrink-0">
                   <Plus className="w-4 h-4 mr-2" /> Add Entry
                 </Button>
@@ -615,6 +659,62 @@ export default function Dashboard() {
                 </div>
               )}
             </div>
+
+            {/* Enquiries List */}
+            {activeTab === 'enquiries' && (
+              <div className="space-y-4">
+                {enquiries.length === 0 ? (
+                  <div className="text-center py-12 bg-gray-50 rounded-xl border border-gray-100">
+                    <MessageSquare className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                    <p className="text-gray-500 font-medium">No enquiries found.</p>
+                  </div>
+                ) : (
+                  enquiries.map(enquiry => (
+                    <div key={enquiry.id} className={`bg-white p-6 rounded-xl shadow-sm border transition-all ${enquiry.status === 'new' ? 'border-brand-green/50 bg-brand-green/5' : 'border-gray-100'}`}>
+                      <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-4">
+                        <div>
+                          <div className="flex items-center gap-3 mb-1">
+                            <h4 className="text-lg font-bold text-brand-dark">{enquiry.name}</h4>
+                            {enquiry.status === 'new' && (
+                              <span className="px-2 py-0.5 bg-brand-green text-white text-xs font-bold uppercase rounded-full">New</span>
+                            )}
+                            <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs font-bold uppercase rounded-full">{enquiry.type}</span>
+                          </div>
+                          <p className="text-sm text-gray-500">{enquiry.company && `${enquiry.company} • `}{new Date(enquiry.date).toLocaleString()}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {enquiry.status === 'new' ? (
+                            <Button onClick={() => handleUpdateEnquiryStatus(enquiry.id, 'read')} size="sm" variant="outline" className="text-xs">
+                              Mark as Read
+                            </Button>
+                          ) : (
+                            <Button onClick={() => handleUpdateEnquiryStatus(enquiry.id, 'new')} size="sm" variant="ghost" className="text-xs text-gray-500">
+                              Mark as Unread
+                            </Button>
+                          )}
+                          <button onClick={() => deleteEnquiry(enquiry.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
+                        <div>
+                          <span className="text-gray-500 font-medium">Email:</span> <a href={`mailto:${enquiry.email}`} className="text-brand-green hover:underline">{enquiry.email}</a>
+                        </div>
+                        {enquiry.phone && (
+                          <div>
+                            <span className="text-gray-500 font-medium">Phone:</span> <a href={`tel:${enquiry.phone}`} className="text-brand-green hover:underline">{enquiry.phone}</a>
+                          </div>
+                        )}
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                        <p className="text-gray-700 whitespace-pre-wrap text-sm">{enquiry.message}</p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
 
           </div>
         </main>

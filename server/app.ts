@@ -246,4 +246,47 @@ app.post('/api/content', requireAuth, (req, res) => {
   res.json({ success: true });
 });
 
+// Enquiries
+app.get('/api/enquiries', requireAuth, (req, res) => {
+  const enquiries = db.all('enquiries') || [];
+  // Sort by ID desc (newest first)
+  enquiries.sort((a: any, b: any) => b.id - a.id);
+  res.json(enquiries);
+});
+
+app.post('/api/enquiries', (req, res) => {
+  const { name, company, email, phone, message, type = 'contact' } = req.body;
+  
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  const newEnquiry = {
+    name,
+    company: company || '',
+    email,
+    phone: phone || '',
+    message,
+    type, // 'contact' or 'quote'
+    date: new Date().toISOString(),
+    status: 'new'
+  };
+
+  const info = db.insert('enquiries', newEnquiry);
+  res.status(201).json({ id: info.lastInsertRowid, ...newEnquiry });
+});
+
+app.put('/api/enquiries/:id', requireAuth, (req, res) => {
+  const { status } = req.body;
+  if (status) {
+    db.update('enquiries', parseInt(req.params.id), { status });
+  }
+  res.json({ success: true });
+});
+
+app.delete('/api/enquiries/:id', requireAuth, (req, res) => {
+  db.delete('enquiries', parseInt(req.params.id));
+  res.json({ success: true });
+});
+
 export default app;
