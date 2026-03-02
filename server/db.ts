@@ -119,7 +119,8 @@ class JsonDB {
           { id: 4, key: 'contact_phone', value: '+86 0551 6466 2624' },
           { id: 5, key: 'contact_email', value: 'Info@beondt.net' },
           { id: 6, key: 'contact_whatsapp_1', value: '+86 180-5518-2909' },
-          { id: 7, key: 'contact_whatsapp_2', value: '+86 157 5518 3636' }
+          { id: 7, key: 'contact_whatsapp_2', value: '+86 157 5518 3636' },
+          { id: 8, key: 'logo_url', value: 'https://www.beondt.com/storage/uploads/images/202408/12/1723442689_dkMJhaOnrI.png' }
         );
         this.save();
       }
