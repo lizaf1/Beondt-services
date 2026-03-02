@@ -43,7 +43,7 @@ export const Navbar = () => {
             <span className="flex items-center gap-2"><MapPin className="w-3 h-3 text-brand-green" /> {content.contact_address || '128 Wanshui Road, Hefei, Anhui, China'}</span>
             <span className="flex items-center gap-2"><Mail className="w-3 h-3 text-brand-green" /> {content.contact_email || 'Info@beondt.net'}</span>
           </div>
-          <div className="flex gap-4">
+          <div className="flex gap-4 items-center">
             <Link to="/contact" className="hover:text-brand-green transition-colors">Support</Link>
             <Link to="/quote" className="hover:text-brand-green transition-colors">Request Quote</Link>
           </div>
@@ -69,15 +69,19 @@ export const Navbar = () => {
             >
               Get a Quote
             </Link>
+            <div id="google_translate_element" className="scale-90 origin-right opacity-80 hover:opacity-100 transition-opacity"></div>
           </nav>
 
           {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden p-2 text-gray-200"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X /> : <Menu />}
-          </button>
+          <div className="flex items-center gap-4 md:hidden">
+            <div id="google_translate_element_mobile" className="scale-90 origin-right opacity-80 hover:opacity-100 transition-opacity"></div>
+            <button 
+              className="p-2 text-gray-200"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? <X /> : <Menu />}
+            </button>
+          </div>
         </div>
       </div>
 

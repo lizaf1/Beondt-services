@@ -38,3 +38,25 @@
 .editor-statusbar {
   @apply !hidden;
 }
+
+/* Google Translate Overrides */
+body {
+  top: 0 !important;
+}
+.skiptranslate iframe {
+  display: none !important;
+}
+#google_translate_element select,
+#google_translate_element_mobile select {
+  @apply bg-transparent border border-white/20 text-white text-xs py-1 px-2 rounded outline-none cursor-pointer hover:border-white/40 transition-colors;
+}
+#google_translate_element select option,
+#google_translate_element_mobile select option {
+  @apply bg-brand-dark text-white;
+}
+.goog-te-gadget {
+  @apply !text-transparent;
+}
+.goog-te-gadget span {
+  display: none;
+}
