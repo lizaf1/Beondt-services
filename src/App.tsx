@@ -18,6 +18,8 @@ import Quote from '@/pages/Quote';
 import QualityControl from '@/pages/QualityControl';
 import Blog from '@/pages/Blog';
 import BlogPostDetail from '@/pages/BlogPostDetail';
+import Privacy from '@/pages/Privacy';
+import Terms from '@/pages/Terms';
 
 import Login from '@/pages/admin/Login';
 import Dashboard from '@/pages/admin/Dashboard';
@@ -51,6 +53,8 @@ const AnimatedRoutes = () => {
         <Route path="/blog/:id" element={<PageWrapper><BlogPostDetail /></PageWrapper>} />
         <Route path="/contact" element={<PageWrapper><Contact /></PageWrapper>} />
         <Route path="/quote" element={<PageWrapper><Quote /></PageWrapper>} />
+        <Route path="/privacy" element={<PageWrapper><Privacy /></PageWrapper>} />
+        <Route path="/terms" element={<PageWrapper><Terms /></PageWrapper>} />
         
         {/* Admin Routes */}
         <Route path="/admin/login" element={<PageWrapper><Login /></PageWrapper>} />
