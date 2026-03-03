@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Phone, Mail, MapPin } from 'lucide-react';
+import { Menu, X, Phone, Mail, MapPin, Globe } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useContent } from '@/context/ContentContext';
 
@@ -69,12 +69,18 @@ export const Navbar = () => {
             >
               Get a Quote
             </Link>
-            <div id="google_translate_element" className="scale-90 origin-right opacity-80 hover:opacity-100 transition-opacity"></div>
+            <div className="flex items-center gap-1.5 bg-white/5 pl-2 pr-1 py-0.5 rounded border border-white/10 hover:border-white/30 transition-colors">
+              <Globe className="w-4 h-4 text-brand-green" />
+              <div id="google_translate_element" className="scale-90 origin-left opacity-80 hover:opacity-100 transition-opacity"></div>
+            </div>
           </nav>
 
           {/* Mobile Menu Button */}
           <div className="flex items-center gap-4 md:hidden">
-            <div id="google_translate_element_mobile" className="scale-90 origin-right opacity-80 hover:opacity-100 transition-opacity"></div>
+            <div className="flex items-center gap-1.5 bg-white/5 pl-2 pr-1 py-0.5 rounded border border-white/10 hover:border-white/30 transition-colors">
+              <Globe className="w-4 h-4 text-brand-green" />
+              <div id="google_translate_element_mobile" className="scale-90 origin-left opacity-80 hover:opacity-100 transition-opacity"></div>
+            </div>
             <button 
               className="p-2 text-gray-200"
               onClick={() => setIsOpen(!isOpen)}
