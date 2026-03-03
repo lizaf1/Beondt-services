@@ -64,6 +64,7 @@ export default function Dashboard() {
   // Edit States
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formData, setFormData] = useState<any>({});
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -101,6 +102,32 @@ export default function Dashboard() {
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
     navigate('/admin/login');
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!res.ok) throw new Error('Upload failed');
+      
+      const data = await res.json();
+      setFormData((prev: any) => ({ ...prev, image: data.url }));
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image. Please try again.');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   // Generic Handlers
@@ -353,7 +380,15 @@ export default function Dashboard() {
                         </div>
                         <div className="space-y-2 md:col-span-2">
                           <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Image URL</label>
-                          <input className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" value={formData.image || ''} onChange={e => setFormData({...formData, image: e.target.value})} placeholder="https://images.unsplash.com/..." />
+                          <div className="flex gap-2">
+                            <input className="flex-grow px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" value={formData.image || ''} onChange={e => setFormData({...formData, image: e.target.value})} placeholder="https://images.unsplash.com/..." />
+                            <div className="relative">
+                              <input type="file" accept="image/*" onChange={handleImageUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" disabled={isUploading} />
+                              <Button type="button" variant="outline" className="h-full whitespace-nowrap" disabled={isUploading}>
+                                {isUploading ? 'Uploading...' : 'Upload Image'}
+                              </Button>
+                            </div>
+                          </div>
                         </div>
                         <div className="space-y-2 md:col-span-2">
                           <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Description</label>
@@ -391,7 +426,15 @@ export default function Dashboard() {
                         </div>
                         <div className="space-y-2 md:col-span-2">
                           <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Cover Image URL</label>
-                          <input className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" value={formData.image || ''} onChange={e => setFormData({...formData, image: e.target.value})} placeholder="https://images.unsplash.com/..." />
+                          <div className="flex gap-2">
+                            <input className="flex-grow px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" value={formData.image || ''} onChange={e => setFormData({...formData, image: e.target.value})} placeholder="https://images.unsplash.com/..." />
+                            <div className="relative">
+                              <input type="file" accept="image/*" onChange={handleImageUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" disabled={isUploading} />
+                              <Button type="button" variant="outline" className="h-full whitespace-nowrap" disabled={isUploading}>
+                                {isUploading ? 'Uploading...' : 'Upload Image'}
+                              </Button>
+                            </div>
+                          </div>
                         </div>
                         <div className="space-y-2 md:col-span-2">
                           <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Excerpt</label>

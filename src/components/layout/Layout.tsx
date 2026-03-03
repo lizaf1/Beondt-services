@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Phone, Mail, MapPin, Globe } from 'lucide-react';
+import { Menu, X, Phone, Mail, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useContent } from '@/context/ContentContext';
 
@@ -69,23 +69,15 @@ export const Navbar = () => {
             >
               Get a Quote
             </Link>
-            <div className="flex items-center gap-1.5 bg-white/5 pl-2 pr-1 py-0.5 rounded border border-white/10 hover:border-white/30 transition-colors">
-              <Globe className="w-4 h-4 text-brand-green" />
-              <div id="google_translate_element" className="scale-90 origin-left opacity-80 hover:opacity-100 transition-opacity"></div>
-            </div>
           </nav>
 
           {/* Mobile Menu Button */}
-          <div className="flex items-center gap-4 md:hidden">
-            <div className="flex items-center gap-1.5 bg-white/5 pl-2 pr-1 py-0.5 rounded border border-white/10 hover:border-white/30 transition-colors">
-              <Globe className="w-4 h-4 text-brand-green" />
-              <div id="google_translate_element_mobile" className="scale-90 origin-left opacity-80 hover:opacity-100 transition-opacity"></div>
-            </div>
+          <div className="flex items-center gap-5 md:hidden">
             <button 
-              className="p-2 text-gray-200"
+              className="p-2 -mr-2 text-gray-200 hover:text-white transition-colors"
               onClick={() => setIsOpen(!isOpen)}
             >
-              {isOpen ? <X /> : <Menu />}
+              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>

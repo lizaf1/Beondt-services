@@ -1,8 +1,9 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
-import db from './db.js';
 import bcrypt from 'bcryptjs';
+import multer from 'multer';
+import { supabase } from './db.js';
 
 const app = express();
 const SECRET_KEY = process.env.JWT_SECRET || 'beondt-secret-key-change-this';
@@ -10,113 +11,99 @@ const SECRET_KEY = process.env.JWT_SECRET || 'beondt-secret-key-change-this';
 app.use(express.json());
 app.use(cookieParser());
 
-// API Routes
+// Multer setup for memory storage
+const upload = multer({ storage: multer.memoryStorage() });
+
+// Upload endpoint
+app.post('/api/upload', upload.single('file'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+
+  try {
+    const file = req.file;
+    const fileExt = file.originalname.split('.').pop();
+    const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+    const filePath = `public/${fileName}`;
+
+    const { data, error } = await supabase.storage
+      .from('images') // Ensure you have a bucket named 'images' in Supabase
+      .upload(filePath, file.buffer, {
+        contentType: file.mimetype,
+        upsert: false
+      });
+
+    if (error) {
+      console.error('Supabase upload error:', error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    const { data: publicUrlData } = supabase.storage
+      .from('images')
+      .getPublicUrl(filePath);
+
+    res.json({ url: publicUrlData.publicUrl });
+  } catch (error: any) {
+    console.error('Upload error:', error);
+    res.status(500).json({ error: error.message || 'Internal server error' });
+  }
+});
 
 // Auth
-app.post('/api/auth/login', (req, res) => {
-  // Handle Vercel serverless function body parsing
+app.post('/api/auth/login', async (req, res) => {
   let body = req.body;
-  
-  // If body is empty or undefined, default to empty object
-  if (!body) {
-    body = {};
-  } else if (typeof body === 'string') {
-    try {
-      body = JSON.parse(body);
-    } catch (e) {
-      console.error('Failed to parse body:', e);
-      body = {};
-    }
+  if (!body) body = {};
+  else if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch (e) { body = {}; }
   } else if (Buffer.isBuffer(body)) {
-      try {
-          body = JSON.parse(body.toString());
-      } catch (e) {
-          console.error('Failed to parse Buffer body:', e);
-          body = {};
-      }
+    try { body = JSON.parse(body.toString()); } catch (e) { body = {}; }
   }
   
   const username = body.username;
   const password = body.password;
   
-  console.log(`Login attempt for user: ${username}`);
+  const ADMIN_USER = process.env.ADMIN_USER || 'admin';
+  const ADMIN_PASS = process.env.ADMIN_PASSWORD || 'Beondt2024!';
   
-  try {
-    // ROBUST AUTH STRATEGY:
-    // 1. Check environment variables/hardcoded fallback first (Guaranteed access)
-    // 2. Check database second (Dynamic users)
-    
-    const ADMIN_USER = process.env.ADMIN_USER || 'admin';
-    const ADMIN_PASS = process.env.ADMIN_PASSWORD || 'Beondt2024!'; // New robust password
-    
-    let user = null;
-    let isMatch = false;
+  let user = null;
+  let isMatch = false;
 
-    // Check Hardcoded/Env Admin
-    if (username === ADMIN_USER) {
-      // Direct string comparison for env var (or use bcrypt if you hash the env var)
-      // For simplicity and robustness here, we compare directly if it's the fallback
-      if (password === ADMIN_PASS) {
-        user = { id: 0, username: ADMIN_USER, role: 'admin' };
-        isMatch = true;
-      } else {
-         // If env var didn't match, check if it's hashed in DB (unlikely for env, but good practice)
-         // But here we just fail this check and fall through to DB check
+  if (username === ADMIN_USER && password === ADMIN_PASS) {
+    user = { id: 0, username: ADMIN_USER, role: 'admin' };
+    isMatch = true;
+  }
+
+  if (!user) {
+    try {
+      const { data: dbUser, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('username', username)
+        .single();
+        
+      if (dbUser && !error) {
+        isMatch = bcrypt.compareSync(password, dbUser.password);
+        if (isMatch) user = dbUser;
       }
+    } catch (dbError) {
+      console.error('Database lookup failed during auth:', dbError);
     }
-
-    // If not found via Env, check DB (safely)
-    if (!user) {
-        try {
-          const dbUser = db.get('users', (u: any) => u.username === username);
-          if (dbUser) {
-              isMatch = bcrypt.compareSync(password, dbUser.password);
-              if (isMatch) {
-                  user = dbUser;
-              }
-          }
-        } catch (dbError) {
-          console.error('Database lookup failed during auth:', dbError);
-          // Do not fail the request, just continue. 
-          // If env auth failed and DB auth crashed, user remains null and we return 401 below.
-        }
-    }
-    
-    if (!user || !isMatch) {
-      console.log(`Auth failed for: ${username}`);
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-
-    console.log(`Auth successful for: ${username}`);
-    const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '24h' });
-    
-    // Set cookie
-    res.cookie('token', token, { 
-        httpOnly: true, 
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax', // 'strict' can cause issues with some redirects
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
-    });
-    
-    res.json({ success: true, user: { username: user.username } });
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Internal server error' });
   }
-});
-
-// Debug endpoint to check users (remove in production if needed, but useful now)
-app.get('/api/debug/users', (req, res) => {
-  try {
-    const users = db.all('users').map((u: any) => ({ ...u, password: '[HIDDEN]' }));
-    res.json({ 
-      users, 
-      dbPath: process.env.VERCEL === '1' ? '/tmp/beondt-data.json' : 'beondt-data.json',
-      env: process.env.NODE_ENV
-    });
-  } catch (e) {
-    res.status(500).json({ error: String(e) });
+  
+  if (!user || !isMatch) {
+    return res.status(401).json({ error: 'Invalid credentials' });
   }
+
+  const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '24h' });
+  
+  res.cookie('token', token, { 
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000
+  });
+  
+  res.json({ success: true, user: { username: user.username } });
 });
 
 app.post('/api/auth/logout', (req, res) => {
@@ -136,7 +123,6 @@ app.get('/api/auth/me', (req, res) => {
   }
 });
 
-// Middleware for protected routes
 const requireAuth = (req: any, res: any, next: any) => {
   const token = req.cookies.token;
   if (!token) return res.status(401).json({ error: 'Not authenticated' });
@@ -148,113 +134,120 @@ const requireAuth = (req: any, res: any, next: any) => {
   }
 };
 
-// CRUD Endpoints
-
 // Industries
-app.get('/api/industries', (req, res) => {
-  try {
-    const industries = db.all('industries');
-    res.json(industries.map((i: any) => ({ ...i, items: JSON.parse(i.items || '[]') })));
-  } catch (error) {
-    res.status(500).json({ error: 'Database error' });
-  }
+app.get('/api/industries', async (req, res) => {
+  const { data, error } = await supabase.from('industries').select('*').order('id', { ascending: true });
+  if (error) return res.status(500).json({ error: error.message });
+  res.json((data || []).map((i: any) => ({ ...i, items: i.items ? JSON.parse(i.items) : [] })));
 });
 
-app.post('/api/industries', requireAuth, (req, res) => {
+app.post('/api/industries', requireAuth, async (req, res) => {
   const { title, description, icon, items, image } = req.body;
-  const info = db.insert('industries', { title, description, icon, items: JSON.stringify(items), image });
-  res.json({ id: info.lastInsertRowid });
+  const { data, error } = await supabase.from('industries').insert([{ title, description, icon, items: JSON.stringify(items), image }]).select();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ id: data[0].id });
 });
 
-app.put('/api/industries/:id', requireAuth, (req, res) => {
+app.put('/api/industries/:id', requireAuth, async (req, res) => {
   const { title, description, icon, items, image } = req.body;
-  db.update('industries', parseInt(req.params.id), { title, description, icon, items: JSON.stringify(items), image });
+  const { error } = await supabase.from('industries').update({ title, description, icon, items: JSON.stringify(items), image }).eq('id', req.params.id);
+  if (error) return res.status(500).json({ error: error.message });
   res.json({ success: true });
 });
 
-app.delete('/api/industries/:id', requireAuth, (req, res) => {
-  db.delete('industries', parseInt(req.params.id));
+app.delete('/api/industries/:id', requireAuth, async (req, res) => {
+  const { error } = await supabase.from('industries').delete().eq('id', req.params.id);
+  if (error) return res.status(500).json({ error: error.message });
   res.json({ success: true });
 });
 
 // Services
-app.get('/api/services', (req, res) => {
-  const services = db.all('services');
-  res.json(services);
+app.get('/api/services', async (req, res) => {
+  const { data, error } = await supabase.from('services').select('*').order('id', { ascending: true });
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data || []);
 });
 
-app.post('/api/services', requireAuth, (req, res) => {
+app.post('/api/services', requireAuth, async (req, res) => {
   const { title, description, icon } = req.body;
-  const info = db.insert('services', { title, description, icon });
-  res.json({ id: info.lastInsertRowid });
+  const { data, error } = await supabase.from('services').insert([{ title, description, icon }]).select();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ id: data[0].id });
 });
 
-app.put('/api/services/:id', requireAuth, (req, res) => {
+app.put('/api/services/:id', requireAuth, async (req, res) => {
   const { title, description, icon } = req.body;
-  db.update('services', parseInt(req.params.id), { title, description, icon });
+  const { error } = await supabase.from('services').update({ title, description, icon }).eq('id', req.params.id);
+  if (error) return res.status(500).json({ error: error.message });
   res.json({ success: true });
 });
 
-app.delete('/api/services/:id', requireAuth, (req, res) => {
-  db.delete('services', parseInt(req.params.id));
+app.delete('/api/services/:id', requireAuth, async (req, res) => {
+  const { error } = await supabase.from('services').delete().eq('id', req.params.id);
+  if (error) return res.status(500).json({ error: error.message });
   res.json({ success: true });
 });
 
 // Blog Posts
-app.get('/api/blog', (req, res) => {
-  const posts = db.all('blog_posts');
-  // Sort by ID desc manually since JSON array order is insertion order
-  posts.sort((a: any, b: any) => b.id - a.id);
-  res.json(posts);
+app.get('/api/blog', async (req, res) => {
+  const { data, error } = await supabase.from('blog_posts').select('*').order('id', { ascending: false });
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data || []);
 });
 
-app.post('/api/blog', requireAuth, (req, res) => {
+app.post('/api/blog', requireAuth, async (req, res) => {
   const { title, date, excerpt, content, image } = req.body;
-  const info = db.insert('blog_posts', { title, date, excerpt, content, image });
-  res.json({ id: info.lastInsertRowid });
+  const { data, error } = await supabase.from('blog_posts').insert([{ title, date, excerpt, content, image }]).select();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ id: data[0].id });
 });
 
-app.put('/api/blog/:id', requireAuth, (req, res) => {
+app.put('/api/blog/:id', requireAuth, async (req, res) => {
   const { title, date, excerpt, content, image } = req.body;
-  db.update('blog_posts', parseInt(req.params.id), { title, date, excerpt, content, image });
+  const { error } = await supabase.from('blog_posts').update({ title, date, excerpt, content, image }).eq('id', req.params.id);
+  if (error) return res.status(500).json({ error: error.message });
   res.json({ success: true });
 });
 
-app.delete('/api/blog/:id', requireAuth, (req, res) => {
-  db.delete('blog_posts', parseInt(req.params.id));
+app.delete('/api/blog/:id', requireAuth, async (req, res) => {
+  const { error } = await supabase.from('blog_posts').delete().eq('id', req.params.id);
+  if (error) return res.status(500).json({ error: error.message });
   res.json({ success: true });
 });
 
 // General Content
-app.get('/api/content', (req, res) => {
-  const content = db.all('content');
-  const contentMap = content.reduce((acc: any, curr: any) => {
+app.get('/api/content', async (req, res) => {
+  const { data, error } = await supabase.from('content').select('*');
+  if (error) return res.status(500).json({ error: error.message });
+  const contentMap = (data || []).reduce((acc: any, curr: any) => {
     acc[curr.key] = curr.value;
     return acc;
   }, {});
   res.json(contentMap);
 });
 
-app.post('/api/content', requireAuth, (req, res) => {
+app.post('/api/content', requireAuth, async (req, res) => {
   const { key, value } = req.body;
-  const existing = db.get('content', (c: any) => c.key === key);
+  const { data: existing } = await supabase.from('content').select('*').eq('key', key).single();
+  
   if (existing) {
-    db.updateWhere('content', (c: any) => c.key === key, { value });
+    const { error } = await supabase.from('content').update({ value }).eq('key', key);
+    if (error) return res.status(500).json({ error: error.message });
   } else {
-    db.insert('content', { key, value });
+    const { error } = await supabase.from('content').insert([{ key, value }]);
+    if (error) return res.status(500).json({ error: error.message });
   }
   res.json({ success: true });
 });
 
 // Enquiries
-app.get('/api/enquiries', requireAuth, (req, res) => {
-  const enquiries = db.all('enquiries') || [];
-  // Sort by ID desc (newest first)
-  enquiries.sort((a: any, b: any) => b.id - a.id);
-  res.json(enquiries);
+app.get('/api/enquiries', requireAuth, async (req, res) => {
+  const { data, error } = await supabase.from('enquiries').select('*').order('id', { ascending: false });
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data || []);
 });
 
-app.post('/api/enquiries', (req, res) => {
+app.post('/api/enquiries', async (req, res) => {
   const { name, company, email, phone, message, type = 'contact' } = req.body;
   
   if (!name || !email || !message) {
@@ -267,25 +260,28 @@ app.post('/api/enquiries', (req, res) => {
     email,
     phone: phone || '',
     message,
-    type, // 'contact' or 'quote'
+    type,
     date: new Date().toISOString(),
     status: 'new'
   };
 
-  const info = db.insert('enquiries', newEnquiry);
-  res.status(201).json({ id: info.lastInsertRowid, ...newEnquiry });
+  const { data, error } = await supabase.from('enquiries').insert([newEnquiry]).select();
+  if (error) return res.status(500).json({ error: error.message });
+  res.status(201).json({ id: data[0].id, ...newEnquiry });
 });
 
-app.put('/api/enquiries/:id', requireAuth, (req, res) => {
+app.put('/api/enquiries/:id', requireAuth, async (req, res) => {
   const { status } = req.body;
   if (status) {
-    db.update('enquiries', parseInt(req.params.id), { status });
+    const { error } = await supabase.from('enquiries').update({ status }).eq('id', req.params.id);
+    if (error) return res.status(500).json({ error: error.message });
   }
   res.json({ success: true });
 });
 
-app.delete('/api/enquiries/:id', requireAuth, (req, res) => {
-  db.delete('enquiries', parseInt(req.params.id));
+app.delete('/api/enquiries/:id', requireAuth, async (req, res) => {
+  const { error } = await supabase.from('enquiries').delete().eq('id', req.params.id);
+  if (error) return res.status(500).json({ error: error.message });
   res.json({ success: true });
 });
 
