@@ -25,24 +25,24 @@ export default function About() {
             <h2 className="text-3xl font-display font-bold uppercase mb-6">Who We Are</h2>
             <div className="space-y-6 text-gray-600 leading-relaxed">
               <p>
-                BEONDT Sourcing is a premier China-based sourcing and procurement company dedicated to serving international businesses in the industrial, construction, and technology sectors.
+                {content.about_text_1 || "BEONDT Sourcing is a premier China-based sourcing and procurement company dedicated to serving international businesses in the industrial, construction, and technology sectors."}
               </p>
               <p>
-                Founded on the principles of transparency, engineering precision, and reliability, we bridge the gap between global buyers and China's vast manufacturing capabilities. Unlike general trading companies, we specialize in technical verticals where quality and specification adherence are critical.
+                {content.about_text_2 || "Founded on the principles of transparency, engineering precision, and reliability, we bridge the gap between global buyers and China's vast manufacturing capabilities. Unlike general trading companies, we specialize in technical verticals where quality and specification adherence are critical."}
               </p>
               <p>
-                Our team consists of engineers, sourcing specialists, and quality control experts who understand the nuances of manufacturing. We act as your eyes and ears on the ground, ensuring that what you order is exactly what you get.
+                {content.about_text_3 || "Our team consists of engineers, sourcing specialists, and quality control experts who understand the nuances of manufacturing. We act as your eyes and ears on the ground, ensuring that what you order is exactly what you get."}
               </p>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-4">
-              <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Meeting" className="rounded-lg shadow-lg w-full h-48 object-cover" />
-              <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Construction" className="rounded-lg shadow-lg w-full h-64 object-cover" />
+              <img src={content.about_image_1 || "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"} alt="Meeting" className="rounded-lg shadow-lg w-full h-48 object-cover" />
+              <img src={content.about_image_2 || "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"} alt="Construction" className="rounded-lg shadow-lg w-full h-64 object-cover" />
             </div>
             <div className="space-y-4 pt-8">
-              <img src="https://images.unsplash.com/photo-1581092335397-9583eb92d232?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Factory" className="rounded-lg shadow-lg w-full h-64 object-cover" />
-              <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Planning" className="rounded-lg shadow-lg w-full h-48 object-cover" />
+              <img src={content.about_image_3 || "https://images.unsplash.com/photo-1581092335397-9583eb92d232?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"} alt="Factory" className="rounded-lg shadow-lg w-full h-64 object-cover" />
+              <img src={content.about_image_4 || "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"} alt="Planning" className="rounded-lg shadow-lg w-full h-48 object-cover" />
             </div>
           </div>
         </div>

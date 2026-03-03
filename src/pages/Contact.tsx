@@ -12,11 +12,39 @@ export default function Contact() {
     company: '',
     email: '',
     phone: '',
-    message: ''
+    message: '',
+    attachment: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const uploadData = new FormData();
+    uploadData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadData,
+      });
+      
+      if (!res.ok) throw new Error('Upload failed');
+      
+      const data = await res.json();
+      setFormData((prev) => ({ ...prev, attachment: data.url }));
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image. Please try again.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -53,7 +81,7 @@ export default function Contact() {
         }
 
         setIsSuccess(true);
-        setFormData({ name: '', company: '', email: '', phone: '', message: '' });
+        setFormData({ name: '', company: '', email: '', phone: '', message: '', attachment: '' });
         setTimeout(() => setIsSuccess(false), 5000);
       } catch (error) {
         console.error('Error submitting form:', error);
@@ -202,6 +230,26 @@ export default function Contact() {
                   placeholder="How can we help you?" 
                 />
                 {errors.message && <p className="text-red-500 text-xs mt-1 font-medium">{errors.message}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Attachment (Optional)</label>
+                <div className="flex gap-2 items-center">
+                  <div className="relative flex-grow">
+                    <input type="file" onChange={handleImageUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" disabled={isUploading} />
+                    <div className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-500 flex items-center justify-between">
+                      <span className="truncate">{formData.attachment ? formData.attachment.split('/').pop() : 'Choose a file...'}</span>
+                      <Button type="button" variant="outline" size="sm" disabled={isUploading}>
+                        {isUploading ? 'Uploading...' : 'Browse'}
+                      </Button>
+                    </div>
+                  </div>
+                  {formData.attachment && (
+                    <Button type="button" variant="ghost" onClick={() => setFormData({...formData, attachment: ''})} className="text-red-500 hover:bg-red-50">
+                      Remove
+                    </Button>
+                  )}
+                </div>
               </div>
 
               <Button type="submit" className="w-full" disabled={isSubmitting}>

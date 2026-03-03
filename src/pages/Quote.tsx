@@ -8,6 +8,34 @@ export default function Quote() {
   const content = useContent();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [attachment, setAttachment] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const uploadData = new FormData();
+    uploadData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadData,
+      });
+      
+      if (!res.ok) throw new Error('Upload failed');
+      
+      const data = await res.json();
+      setAttachment(data.url);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image. Please try again.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,7 +53,8 @@ Category: ${formData.get('category')}
 Details: ${formData.get('details')}
 Quantity: ${formData.get('quantity')}
 Target Price: ${formData.get('price')}`,
-      type: 'quote'
+      type: 'quote',
+      attachment
     };
 
     try {
@@ -40,6 +69,7 @@ Target Price: ${formData.get('price')}`,
       if (!response.ok) throw new Error('Failed to submit form');
       
       setIsSuccess(true);
+      setAttachment('');
       (e.target as HTMLFormElement).reset();
       setTimeout(() => setIsSuccess(false), 5000);
     } catch (error) {
@@ -134,6 +164,25 @@ Target Price: ${formData.get('price')}`,
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Target Price (USD) (Optional)</label>
                       <input name="price" type="text" className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-green focus:border-transparent outline-none" placeholder="e.g. $50 per unit" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Attachment (Optional)</label>
+                    <div className="flex gap-2 items-center">
+                      <div className="relative flex-grow">
+                        <input type="file" onChange={handleImageUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" disabled={isUploading} />
+                        <div className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-500 flex items-center justify-between">
+                          <span className="truncate">{attachment ? attachment.split('/').pop() : 'Choose a file...'}</span>
+                          <Button type="button" variant="outline" size="sm" disabled={isUploading}>
+                            {isUploading ? 'Uploading...' : 'Browse'}
+                          </Button>
+                        </div>
+                      </div>
+                      {attachment && (
+                        <Button type="button" variant="ghost" onClick={() => setAttachment('')} className="text-red-500 hover:bg-red-50">
+                          Remove
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </div>

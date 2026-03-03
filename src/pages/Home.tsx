@@ -173,7 +173,7 @@ export default function Home() {
           <div className="relative hidden xl:block">
             <div className="absolute -inset-4 bg-brand-green/10 rounded-xl transform rotate-3" />
             <img 
-              src="https://images.unsplash.com/photo-1565514020176-dbf2277e3c66?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
+              src={content.home_about_image || "https://images.unsplash.com/photo-1565514020176-dbf2277e3c66?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"} 
               alt="Team in warehouse" 
               className="relative rounded-xl shadow-2xl w-full h-auto object-cover"
             />

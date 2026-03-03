@@ -47,6 +47,7 @@ interface Enquiry {
   type: string;
   date: string;
   status: string;
+  attachment?: string;
 }
 
 export default function Dashboard() {
@@ -394,6 +395,10 @@ export default function Dashboard() {
                           <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Description</label>
                           <textarea className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="Describe this industry sector..." />
                         </div>
+                        <div className="space-y-2 md:col-span-2">
+                          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Key Items (Comma Separated)</label>
+                          <input className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" value={Array.isArray(formData.items) ? formData.items.join(', ') : (formData.items || '')} onChange={e => setFormData({...formData, items: e.target.value})} placeholder="e.g. Precision tools, Testing instruments, Sensors" />
+                        </div>
                       </>
                     )}
 
@@ -617,6 +622,197 @@ export default function Dashboard() {
                           onBlur={(e) => saveContent('home_about_text', e.target.value)} 
                         />
                       </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">About Image URL</label>
+                        <div className="flex gap-2">
+                          <input 
+                            className="flex-grow px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
+                            defaultValue={content['home_about_image']} 
+                            onBlur={(e) => saveContent('home_about_image', e.target.value)} 
+                            placeholder="https://images.unsplash.com/..."
+                            id="home_about_image_input"
+                          />
+                          <div className="relative">
+                            <input type="file" accept="image/*" onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+                              const formData = new FormData();
+                              formData.append('file', file);
+                              try {
+                                const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                                if (!res.ok) throw new Error('Upload failed');
+                                const data = await res.json();
+                                saveContent('home_about_image', data.url);
+                                const input = document.getElementById('home_about_image_input') as HTMLInputElement;
+                                if (input) input.value = data.url;
+                              } catch (error) {
+                                alert('Failed to upload image.');
+                              }
+                            }} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                            <Button type="button" variant="outline" className="h-full whitespace-nowrap">
+                              Upload
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                    <div className="flex items-center gap-3 mb-8 border-b pb-4">
+                      <FileText className="w-5 h-5 text-brand-green" />
+                      <h3 className="text-lg font-bold uppercase tracking-tight">About Page Content</h3>
+                    </div>
+                    <div className="grid grid-cols-1 gap-8">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Paragraph 1</label>
+                        <textarea 
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
+                          rows={3}
+                          defaultValue={content['about_text_1']} 
+                          onBlur={(e) => saveContent('about_text_1', e.target.value)} 
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Paragraph 2</label>
+                        <textarea 
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
+                          rows={3}
+                          defaultValue={content['about_text_2']} 
+                          onBlur={(e) => saveContent('about_text_2', e.target.value)} 
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Paragraph 3</label>
+                        <textarea 
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
+                          rows={3}
+                          defaultValue={content['about_text_3']} 
+                          onBlur={(e) => saveContent('about_text_3', e.target.value)} 
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Image 1 URL</label>
+                          <div className="flex gap-2">
+                            <input 
+                              className="flex-grow px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
+                              defaultValue={content['about_image_1']} 
+                              onBlur={(e) => saveContent('about_image_1', e.target.value)} 
+                              id="about_image_1_input"
+                            />
+                            <div className="relative">
+                              <input type="file" accept="image/*" onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                const formData = new FormData();
+                                formData.append('file', file);
+                                try {
+                                  const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                                  if (!res.ok) throw new Error('Upload failed');
+                                  const data = await res.json();
+                                  saveContent('about_image_1', data.url);
+                                  const input = document.getElementById('about_image_1_input') as HTMLInputElement;
+                                  if (input) input.value = data.url;
+                                } catch (error) {
+                                  alert('Failed to upload image.');
+                                }
+                              }} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                              <Button type="button" variant="outline" className="h-full whitespace-nowrap">Upload</Button>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Image 2 URL</label>
+                          <div className="flex gap-2">
+                            <input 
+                              className="flex-grow px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
+                              defaultValue={content['about_image_2']} 
+                              onBlur={(e) => saveContent('about_image_2', e.target.value)} 
+                              id="about_image_2_input"
+                            />
+                            <div className="relative">
+                              <input type="file" accept="image/*" onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                const formData = new FormData();
+                                formData.append('file', file);
+                                try {
+                                  const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                                  if (!res.ok) throw new Error('Upload failed');
+                                  const data = await res.json();
+                                  saveContent('about_image_2', data.url);
+                                  const input = document.getElementById('about_image_2_input') as HTMLInputElement;
+                                  if (input) input.value = data.url;
+                                } catch (error) {
+                                  alert('Failed to upload image.');
+                                }
+                              }} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                              <Button type="button" variant="outline" className="h-full whitespace-nowrap">Upload</Button>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Image 3 URL</label>
+                          <div className="flex gap-2">
+                            <input 
+                              className="flex-grow px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
+                              defaultValue={content['about_image_3']} 
+                              onBlur={(e) => saveContent('about_image_3', e.target.value)} 
+                              id="about_image_3_input"
+                            />
+                            <div className="relative">
+                              <input type="file" accept="image/*" onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                const formData = new FormData();
+                                formData.append('file', file);
+                                try {
+                                  const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                                  if (!res.ok) throw new Error('Upload failed');
+                                  const data = await res.json();
+                                  saveContent('about_image_3', data.url);
+                                  const input = document.getElementById('about_image_3_input') as HTMLInputElement;
+                                  if (input) input.value = data.url;
+                                } catch (error) {
+                                  alert('Failed to upload image.');
+                                }
+                              }} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                              <Button type="button" variant="outline" className="h-full whitespace-nowrap">Upload</Button>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Image 4 URL</label>
+                          <div className="flex gap-2">
+                            <input 
+                              className="flex-grow px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
+                              defaultValue={content['about_image_4']} 
+                              onBlur={(e) => saveContent('about_image_4', e.target.value)} 
+                              id="about_image_4_input"
+                            />
+                            <div className="relative">
+                              <input type="file" accept="image/*" onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                const formData = new FormData();
+                                formData.append('file', file);
+                                try {
+                                  const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                                  if (!res.ok) throw new Error('Upload failed');
+                                  const data = await res.json();
+                                  saveContent('about_image_4', data.url);
+                                  const input = document.getElementById('about_image_4_input') as HTMLInputElement;
+                                  if (input) input.value = data.url;
+                                } catch (error) {
+                                  alert('Failed to upload image.');
+                                }
+                              }} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                              <Button type="button" variant="outline" className="h-full whitespace-nowrap">Upload</Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -753,6 +949,16 @@ export default function Dashboard() {
                       <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                         <p className="text-gray-700 whitespace-pre-wrap text-sm">{enquiry.message}</p>
                       </div>
+                      {enquiry.attachment && (
+                        <div className="mt-4">
+                          <a href={enquiry.attachment} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-brand-green hover:underline">
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                            </svg>
+                            View Attachment
+                          </a>
+                        </div>
+                      )}
                     </div>
                   ))
                 )}

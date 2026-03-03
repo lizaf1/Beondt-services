@@ -248,7 +248,7 @@ app.get('/api/enquiries', requireAuth, async (req, res) => {
 });
 
 app.post('/api/enquiries', async (req, res) => {
-  const { name, company, email, phone, message, type = 'contact' } = req.body;
+  const { name, company, email, phone, message, type = 'contact', attachment } = req.body;
   
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -261,6 +261,7 @@ app.post('/api/enquiries', async (req, res) => {
     phone: phone || '',
     message,
     type,
+    attachment: attachment || null,
     date: new Date().toISOString(),
     status: 'new'
   };
