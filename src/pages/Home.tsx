@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Layout } from '@/components/layout/Layout';
 import { Section, SectionHeader } from '@/components/ui/Section';
 import { Button } from '@/components/ui/Button';
@@ -136,6 +137,20 @@ export default function Home() {
 
   return (
     <Layout>
+      <Helmet>
+        <title>Reliable Industrial Sourcing Partner in China | BEONDT Sourcing</title>
+        <meta name="description" content="Professional industrial sourcing and quality control services in China. We bridge the gap between your business and reliable Chinese manufacturers." />
+        <link rel="canonical" href="https://yourdomain.com/" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "BEONDT Sourcing",
+            "url": "https://yourdomain.com",
+            "logo": "https://yourdomain.com/logo.png"
+          })}
+        </script>
+      </Helmet>
       <Hero />
 
       {/* About Section */}

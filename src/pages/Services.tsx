@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Layout } from '@/components/layout/Layout';
 import { Section } from '@/components/ui/Section';
 import { Button } from '@/components/ui/Button';
@@ -37,6 +38,23 @@ export default function Services() {
 
   return (
     <Layout>
+      <Helmet>
+        <title>Industrial Sourcing & Quality Control Services | BEONDT Sourcing</title>
+        <meta name="description" content="Comprehensive sourcing, quality inspection, and supply chain management services tailored for industrial businesses." />
+        <link rel="canonical" href="https://yourdomain.com/services" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "Industrial Sourcing & Quality Control Services",
+            "provider": {
+              "@type": "Organization",
+              "name": "BEONDT Sourcing"
+            },
+            "description": "Comprehensive sourcing, quality inspection, and supply chain management services."
+          })}
+        </script>
+      </Helmet>
       <div className="bg-brand-dark text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl md:text-6xl font-display font-bold uppercase tracking-tight mb-6">{content.services_header_title || 'Our Services'}</h1>

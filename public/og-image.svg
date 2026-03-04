@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#222222"/>
+  <g transform="translate(100, 200) scale(1.5)">
+    <!-- BEONDT -->
+    <path d="M 0 0 L 150 0 L 180 50 L 150 100 L 0 100 Z" fill="#a4c61a"/>
+    <path d="M 10 10 L 140 10 L 165 50 L 140 90 L 10 90 Z" fill="#222222"/>
+    <text x="200" y="80" font-family="Arial, sans-serif" font-size="80" font-weight="bold" fill="white">BEONDT</text>
+    <!-- SOURCING -->
+    <text x="200" y="160" font-family="Arial, sans-serif" font-size="50" font-weight="normal" fill="white" letter-spacing="10">SOURCING</text>
+    <line x1="200" y1="180" x2="600" y2="180" stroke="#a4c61a" stroke-width="5"/>
+  </g>
+</svg>

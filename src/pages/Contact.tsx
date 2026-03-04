@@ -24,6 +24,27 @@ export default function Contact() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Validate file size (5MB = 5 * 1024 * 1024 bytes)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size must be less than 5MB');
+      e.target.value = '';
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = [
+      'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml',
+      'application/pdf',
+      'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    ];
+
+    if (!allowedTypes.includes(file.type) && !file.type.startsWith('image/')) {
+      alert('Invalid file type. Please upload a picture, document, spreadsheet, or PDF.');
+      e.target.value = '';
+      return;
+    }
+
     setIsUploading(true);
     const uploadData = new FormData();
     uploadData.append('file', file);
@@ -234,9 +255,10 @@ export default function Contact() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Attachment (Optional)</label>
+                <p className="text-xs text-gray-500 mb-2">Allowed formats: Images, PDF, Word, Excel. Max size: 5MB.</p>
                 <div className="flex gap-2 items-center">
                   <div className="relative flex-grow">
-                    <input type="file" onChange={handleImageUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" disabled={isUploading} />
+                    <input type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx" onChange={handleImageUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" disabled={isUploading} />
                     <div className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-500 flex items-center justify-between">
                       <span className="truncate">{formData.attachment ? formData.attachment.split('/').pop() : 'Choose a file...'}</span>
                       <Button type="button" variant="outline" size="sm" disabled={isUploading}>

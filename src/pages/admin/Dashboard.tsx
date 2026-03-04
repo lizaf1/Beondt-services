@@ -52,6 +52,7 @@ interface Enquiry {
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<'industries' | 'services' | 'blog' | 'content' | 'pages' | 'enquiries'>('industries');
+  const [activeSubTab, setActiveSubTab] = useState<'general' | 'home' | 'about' | 'contact' | 'headers'>('general');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -535,14 +536,41 @@ export default function Dashboard() {
                   </div>
                 </div>
               ))}
+            </div>
 
-              {activeTab === 'content' && (
-                <div className="space-y-8">
-                  <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-                    <div className="flex items-center gap-3 mb-8 border-b pb-4">
-                      <Settings className="w-5 h-5 text-brand-green" />
-                      <h3 className="text-lg font-bold uppercase tracking-tight">Site Settings</h3>
-                    </div>
+            {activeTab === 'content' && (
+                <div className="flex flex-col md:flex-row gap-8">
+                  {/* Sub-tabs Sidebar */}
+                  <div className="w-full md:w-56 shrink-0 flex flex-row md:flex-col gap-2 overflow-x-auto">
+                    {[
+                      { id: 'general', label: 'General Settings', icon: Settings },
+                      { id: 'home', label: 'Home Page', icon: LayoutGrid },
+                      { id: 'about', label: 'About Page', icon: FileText },
+                      { id: 'contact', label: 'Contact Info', icon: Phone },
+                      { id: 'headers', label: 'Page Headers', icon: Type },
+                    ].map(tab => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveSubTab(tab.id as any)}
+                        className={cn(
+                          "flex items-center gap-3 px-4 py-3 text-sm font-bold uppercase tracking-wide rounded-xl text-left whitespace-nowrap transition-all",
+                          activeSubTab === tab.id ? "bg-brand-dark text-white shadow-md" : "text-gray-500 hover:bg-white hover:shadow-sm border border-transparent hover:border-gray-200"
+                        )}
+                      >
+                        <tab.icon className="w-4 h-4" />
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Sub-tab Content */}
+                  <div className="flex-grow space-y-8">
+                    {activeSubTab === 'general' && (
+                      <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                        <div className="flex items-center gap-3 mb-8 border-b pb-4">
+                          <Settings className="w-5 h-5 text-brand-green" />
+                          <h3 className="text-lg font-bold uppercase tracking-tight">Site Settings</h3>
+                        </div>
                     <div className="grid grid-cols-1 gap-8">
                       <div className="space-y-2">
                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Logo URL</label>
@@ -564,12 +592,15 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
+                )}
 
-                  <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-                    <div className="flex items-center gap-3 mb-8 border-b pb-4">
-                      <LayoutGrid className="w-5 h-5 text-brand-green" />
-                      <h3 className="text-lg font-bold uppercase tracking-tight">Hero Section Configuration</h3>
-                    </div>
+                {activeSubTab === 'home' && (
+                      <div className="space-y-8">
+                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                          <div className="flex items-center gap-3 mb-8 border-b pb-4">
+                            <LayoutGrid className="w-5 h-5 text-brand-green" />
+                            <h3 className="text-lg font-bold uppercase tracking-tight">Hero Section Configuration</h3>
+                          </div>
                     <div className="grid grid-cols-1 gap-8">
                       <div className="space-y-2">
                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Main Headline</label>
@@ -657,12 +688,15 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
+                </div>
+              )}
 
-                  <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-                    <div className="flex items-center gap-3 mb-8 border-b pb-4">
-                      <FileText className="w-5 h-5 text-brand-green" />
-                      <h3 className="text-lg font-bold uppercase tracking-tight">About Page Content</h3>
-                    </div>
+              {activeSubTab === 'about' && (
+                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                      <div className="flex items-center gap-3 mb-8 border-b pb-4">
+                        <FileText className="w-5 h-5 text-brand-green" />
+                        <h3 className="text-lg font-bold uppercase tracking-tight">About Page Content</h3>
+                      </div>
                     <div className="grid grid-cols-1 gap-8">
                       <div className="space-y-2">
                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Paragraph 1</label>
@@ -815,12 +849,14 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
+                )}
 
-                  <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-                    <div className="flex items-center gap-3 mb-8 border-b pb-4">
-                      <Phone className="w-5 h-5 text-brand-green" />
-                      <h3 className="text-lg font-bold uppercase tracking-tight">Contact & Communication</h3>
-                    </div>
+                {activeSubTab === 'contact' && (
+                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                      <div className="flex items-center gap-3 mb-8 border-b pb-4">
+                        <Phone className="w-5 h-5 text-brand-green" />
+                        <h3 className="text-lg font-bold uppercase tracking-tight">Contact & Communication</h3>
+                      </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div className="space-y-2 md:col-span-2">
                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Physical Address</label>
@@ -864,40 +900,42 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
+                )}
+
+                {activeSubTab === 'headers' && (
+                      <div className="space-y-8">
+                        {['about', 'industries', 'services', 'process', 'quality_control', 'blog', 'contact', 'quote'].map((page) => (
+                          <div key={page} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                            <div className="flex items-center gap-3 mb-8 border-b pb-4">
+                              <Type className="w-5 h-5 text-brand-green" />
+                              <h3 className="text-lg font-bold uppercase tracking-tight">{page.replace('_', ' ')} Page Header</h3>
+                            </div>
+                            <div className="grid grid-cols-1 gap-8">
+                              <div className="space-y-2">
+                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Header Title</label>
+                                <input 
+                                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
+                                  defaultValue={content[`${page}_header_title`]} 
+                                  onBlur={(e) => saveContent(`${page}_header_title`, e.target.value)} 
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Header Subtitle</label>
+                                <textarea 
+                                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
+                                  rows={3}
+                                  defaultValue={content[`${page}_header_subtitle`]} 
+                                  onBlur={(e) => saveContent(`${page}_header_subtitle`, e.target.value)} 
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
-              {activeTab === 'pages' && (
-                <div className="space-y-8">
-                  {['about', 'industries', 'services', 'process', 'quality_control', 'blog', 'contact', 'quote'].map((page) => (
-                    <div key={page} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-                      <div className="flex items-center gap-3 mb-8 border-b pb-4">
-                        <LayoutGrid className="w-5 h-5 text-brand-green" />
-                        <h3 className="text-lg font-bold uppercase tracking-tight">{page.replace('_', ' ')} Page Header</h3>
-                      </div>
-                      <div className="grid grid-cols-1 gap-8">
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Header Title</label>
-                          <input 
-                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
-                            defaultValue={content[`${page}_header_title`]} 
-                            onBlur={(e) => saveContent(`${page}_header_title`, e.target.value)} 
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Header Subtitle</label>
-                          <textarea 
-                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green outline-none transition-all" 
-                            rows={3}
-                            defaultValue={content[`${page}_header_subtitle`]} 
-                            onBlur={(e) => saveContent(`${page}_header_subtitle`, e.target.value)} 
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
 
             {/* Enquiries List */}
             {activeTab === 'enquiries' && (
