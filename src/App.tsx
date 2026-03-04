@@ -79,7 +79,7 @@ export default function App() {
             <meta property="og:url" content="https://beondtsourcing.com/" />
             <meta property="og:title" content="BEONDT Sourcing | China Industrial & Building Materials Procurement Experts" />
             <meta property="og:description" content="BEONDT Sourcing provides professional China sourcing services for machinery, electronics, agricultural technology, and building materials including marble, granite, and ceramics." />
-            <meta property="og:image" content="/og-image.svg" />
+            <meta property="og:image" content="https://beondtsourcing.com/logo.png" />
             <meta property="og:site_name" content="BEONDT Sourcing" />
             <meta property="og:locale" content="en_US" />
 
@@ -88,7 +88,7 @@ export default function App() {
             <meta name="twitter:url" content="https://beondtsourcing.com/" />
             <meta name="twitter:title" content="BEONDT Sourcing | China Industrial & Building Materials Procurement Experts" />
             <meta name="twitter:description" content="BEONDT Sourcing provides professional China sourcing services for machinery, electronics, agricultural technology, and building materials including marble, granite, and ceramics." />
-            <meta name="twitter:image" content="/og-image.svg" />
+            <meta name="twitter:image" content="https://beondtsourcing.com/logo.png" />
           </Helmet>
           <ScrollToTop />
           <AnimatedRoutes />
