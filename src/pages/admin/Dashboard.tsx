@@ -307,13 +307,13 @@ export default function Dashboard() {
             <Type className="w-4 h-4 shrink-0" /> Global Config
           </button>
           <button 
-            onClick={() => setActiveTab('pages')}
+            onClick={() => { setActiveTab('content'); setActiveSubTab('headers'); }}
             className={cn(
               "flex items-center gap-2 md:gap-3 px-4 py-2 md:py-3 rounded-lg transition-all text-xs md:text-sm font-bold uppercase tracking-wide whitespace-nowrap",
-              activeTab === 'pages' ? "bg-brand-dark text-white shadow-lg" : "text-gray-500 hover:bg-gray-100"
+              activeTab === 'content' && activeSubTab === 'headers' ? "bg-brand-dark text-white shadow-lg" : "text-gray-500 hover:bg-gray-100"
             )}
           >
-            <LayoutGrid className="w-4 h-4 shrink-0" /> Page Headers
+            <Type className="w-4 h-4 shrink-0" /> Page Headers
           </button>
           <button 
             onClick={() => setActiveTab('enquiries')}
